@@ -1,0 +1,19 @@
+<!-- 自定义tabBar布局 -->
+<view class="tab-bar">
+  <!-- wiki项 -->
+  <view class="tab-bar-item" bindtap="switchTab" data-path="/pages/wiki/wiki">
+    <view class="icon-wiki"></view>
+    <view class="text {{selected === 'wiki' ? 'selected' : ''}}">wiki</view>
+  </view>
+
+  <!-- 中间加号按钮 -->
+  <view class="tab-bar-add" bindtap="handleAdd">
+    <view class="add-btn">+</view>
+  </view>
+
+  <!-- record项 -->
+  <view class="tab-bar-item" bindtap="switchTab" data-path="/pages/record/record">
+    <view class="icon-record"></view>
+    <view class="text {{selected === 'record' ? 'selected' : ''}}">record</view>
+  </view>
+</view>

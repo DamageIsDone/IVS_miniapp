@@ -1,0 +1,58 @@
+/* 底部tabBar容器 */
+.tab-bar {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50px;
+  background-color: #ffffff;
+  border-top: 1px solid #eeeeee;
+  padding-bottom: env(safe-area-inset-bottom); /* 适配底部安全区 */
+}
+
+/* 左右tab项 */
+.tab-bar-item {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+}
+
+/* 文字样式 */
+.tab-bar-item .text {
+  color: #666666;
+  margin-top: 2px;
+}
+.tab-bar-item .text.selected {
+  color: #0088ff;
+}
+
+/* 中间加号按钮容器 */
+.tab-bar-add {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px; /* 向上凸起 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 加号按钮样式 */
+.add-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #0088ff;
+  color: #ffffff;
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 136, 255, 0.3);
+}

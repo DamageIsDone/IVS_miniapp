@@ -3,5 +3,19 @@
 <scroll-view class="scrollarea" scroll-y type="list">
   <view class="container">
     Weixin
+    <button 
+      type="default" 
+      bindtap="gotoWiki"
+      style="margin-top: 30rpx; width: 80%;"
+    >
+      前往Wiki页面（测试用）
+    </button>
+    <button 
+      type="default" 
+      bindtap="gotoRecord"
+      style="width: 80%;"
+    >
+      前往Record页面（测试用）
+    </button>
   </view>
 </scroll-view>

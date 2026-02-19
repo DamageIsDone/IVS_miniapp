@@ -22,5 +22,21 @@
   },
   "componentFramework": "glass-easel",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "tabBar": {
+    "custom": true,
+    "color": "#666666",
+    "selectedColor": "#0088ff",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/wiki/wiki",
+        "text": "wiki"
+      },
+      {
+        "pagePath": "pages/record/record",
+        "text": "record"
+      }
+    ]
+  }
 }
