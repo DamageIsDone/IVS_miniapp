@@ -1,21 +1,14 @@
 {
-  "libVersion": "2.32.3",
+  "libVersion": "3.14.2",
   "projectname": "IVS",
   "setting": {
     "urlCheck": true,
-    "coverView": false,
+    "coverView": true,
     "lazyloadPlaceholderEnable": false,
-    "skylineRenderEnable": true,
+    "skylineRenderEnable": false,
     "preloadBackgroundData": false,
     "autoAudits": false,
-    "useApiHook": true,
-    "showShadowRootInWxmlPanel": false,
-    "useStaticServer": false,
-    "useLanDebug": false,
-    "showES6CompileOption": false,
-    "compileHotReLoad": true,
-    "bigPackageSizeSupport": false,
-    "checkInvalidKey": true,
-    "ignoreDevUnusedFiles": true
+    "showShadowRootInWxmlPanel": true,
+    "compileHotReLoad": true
   }
 }
