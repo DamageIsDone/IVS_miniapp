@@ -1,2 +1,26 @@
 <!--pages/wiki/wiki.wxml-->
-<text>pages/wiki/wiki.wxml</text>
+<view class="wiki-container">
+  <!-- 搜索栏 -->
+  <view class="search-bar">
+    <icon type="search" size="16" color="#999"></icon>
+    <input placeholder="搜索" class="search-input" />
+  </view>
+
+  <!-- 分类标签 -->
+  <view class="tab-wrap">
+    <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" 
+          bindtap="switchTab" data-tab="0">监管者</view>
+    <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" 
+          bindtap="switchTab" data-tab="1">求生者</view>
+    <view class="tab-item {{currentTab === 2 ? 'active' : ''}}" 
+          bindtap="switchTab" data-tab="2">人格脉络</view>
+  </view>
+
+  <!-- 角色列表：渲染currentList（动态切换的数据源） -->
+  <view class="character-list">
+    <view class="character-card" wx:for="{{currentList}}" wx:key="id">
+      <view class="name">{{item.name}}</view>
+      <view class="real-name">{{item.realName}}</view>
+    </view>
+  </view>
+</view>
