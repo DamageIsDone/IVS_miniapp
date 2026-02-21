@@ -1,2 +1,111 @@
 <!--pages/record/record.wxml-->
-<text>pages/record/record.wxml</text>
+<view class="container">
+  <!-- 固定顶部的导航栏 + 历史战绩 + 数据卡片 -->
+  <view class="fixed-header">
+    <!-- 仅展示标题的 navigation-bar 组件 -->
+    <navigation-bar title="Identity V"></navigation-bar>
+
+    <!-- 独立的历史战绩栏 -->
+    <view class="history-bar">
+      <text class="history-title">历史战绩</text>
+      <view class="history-actions">
+        <view class="action-btn refresh-btn" bindtap="onRefresh">
+          <text class="icon">🔄</text>
+        </view>
+        <view class="action-btn add-btn" bindtap="onAdd">
+          <text class="icon">+</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 数据概览卡片 -->
+    <view class="stats-card">
+      <view class="stats-row">
+        <text class="stats-label">监管者胜率：75.00%</text>
+        <text class="stats-sub">常用角色：摄影师</text>
+      </view>
+      <view class="stats-row">
+        <text class="stats-label">求生者胜率：100.00%</text>
+        <text class="stats-sub">常用角色：古董商</text>
+      </view>
+      <!-- 排行榜按钮 -->
+      <view class="rank-btn" bindtap="onRankClick">
+        <text class="rank-btn-text">排行榜</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 可滑动的战绩列表（留出顶部固定区域的间距） -->
+  <scroll-view class="record-list-container" scroll-y="true">
+    <view class="record-list">
+      <block wx:for="{{records}}" wx:key="index">
+        <view class="record-item {{item.type}}"
+        bindlongpress="onRecordLongPress" 
+              data-index="{{index}}"  
+              data-record="{{item}}">
+          <!-- 战绩头部 -->
+          <view class="record-header" bindtap="toggleExpand" data-index="{{index}}">
+            <text class="record-role">{{item.role}}</text>
+            <view class="header-right">
+              <text class="record-result">{{item.result}}</text>
+              <text class="expand-btn">{{item.expanded ? '▲' : '▼'}}</text>
+            </view>
+          </view>
+
+          <!-- 战绩详情 -->
+          <view class="record-detail" wx:if="{{item.expanded}}">
+            <block wx:for="{{item.details}}" wx:for-item="detail" wx:key="detailKey">
+              <view class="detail-item">
+                <text class="detail-icon">{{detail.role.includes('监管') ? '👁️' : '👤'}}</text>
+                <text class="detail-text">{{detail.role}}</text>
+                <text class="detail-tag {{detail.tag.includes('全胜') || detail.tag.includes('逃脱') ? 'win-tag' : 'lose-tag'}}">{{detail.tag}}</text>
+              </view>
+            </block>
+          </view>
+        </view>
+      </block>
+    </view>
+  </scroll-view>
+
+  <!-- 新增：自定义修改弹窗（默认隐藏） -->
+  <view class="edit-modal {{showEditModal ? 'show' : ''}}" wx:if="{{showEditModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">修改</text>
+        <view class="modal-close" bindtap="closeEditModal">✕</view>
+      </view>
+
+      <!-- 监管者部分 -->
+      <view class="modal-section">
+        <text class="section-label">监管者：</text>
+        <view class="tag-group">
+          <view class="tag-item" bindtap="onSelectRole" data-type="killer" data-value="摄影师">摄影师</view>
+        </view>
+        <text class="section-sub">携带天赋：</text>
+        <view class="tag-group">
+          <view class="tag-item" bindtap="onSelectTalent" data-type="killer" data-value="挽留">挽留</view>
+          <view class="tag-item" bindtap="onSelectTalent" data-type="killer" data-value="禁闭空间">禁闭空间</view>
+        </view>
+      </view>
+
+      <!-- 求生者部分（循环显示） -->
+      <view class="modal-section" wx:for="{{editDetails}}" wx:key="index">
+        <text class="section-label">求生者：</text>
+        <view class="tag-group">
+          <view class="tag-item" bindtap="onSelectResult" data-index="{{index}}" data-value="迷失">迷失</view>
+          <view class="tag-item" bindtap="onSelectSurvivor" data-index="{{index}}" data-value="{{item.survivor}}">{{item.survivor}}</view>
+        </view>
+        <text class="section-sub">携带天赋：</text>
+        <view class="tag-group">
+          <view class="tag-item" bindtap="onSelectTalent" data-type="survivor" data-index="{{index}}" data-value="飞轮效应">飞轮效应</view>
+          <view class="tag-item" bindtap="onSelectTalent" data-type="survivor" data-index="{{index}}" data-value="化险为夷">化险为夷</view>
+        </view>
+      </view>
+
+      <view class="modal-actions">
+        <view class="action-btn confirm" bindtap="confirmEdit">确认</view>
+        <view class="action-btn cancel" bindtap="closeEditModal">取消</view>
+      </view>
+    </view>
+  </view>
+</view>
