@@ -2,6 +2,6 @@
 
 App({
   globalData: {
-    baseUrl: 'http://192.168.31.178:8080'  // 这里冒号前填写你的ip地址
+    baseUrl: 'http://192.168.0.101:8080'
   }
 });

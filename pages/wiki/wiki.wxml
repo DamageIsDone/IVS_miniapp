@@ -3,24 +3,54 @@
   <!-- 搜索栏 -->
   <view class="search-bar">
     <icon type="search" size="16" color="#999"></icon>
-    <input placeholder="搜索" class="search-input" />
+    <input placeholder="搜索角色/职业" class="search-input" bindinput="onSearchInput" />
   </view>
 
   <!-- 分类标签 -->
   <view class="tab-wrap">
-    <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" 
-          bindtap="switchTab" data-tab="0">监管者</view>
-    <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" 
-          bindtap="switchTab" data-tab="1">求生者</view>
-    <view class="tab-item {{currentTab === 2 ? 'active' : ''}}" 
-          bindtap="switchTab" data-tab="2">人格脉络</view>
+    <view class="tab-item {{currentTab === 0 ? 'active' : ''}}" bindtap="switchTab" data-tab="0">
+      监管者
+      <view class="underline" wx:if="{{currentTab === 0}}"></view>
+    </view>
+    <view class="tab-item {{currentTab === 1 ? 'active' : ''}}" bindtap="switchTab" data-tab="1">
+      求生者
+      <view class="underline" wx:if="{{currentTab === 1}}"></view>
+    </view>
+    <view class="tab-item {{currentTab === 2 ? 'active' : ''}}" bindtap="switchTab" data-tab="2">
+      人格脉络
+      <view class="underline" wx:if="{{currentTab === 2}}"></view>
+    </view>
   </view>
 
-  <!-- 角色列表：渲染currentList（动态切换的数据源） -->
-  <view class="character-list">
-    <view class="character-card" wx:for="{{currentList}}" wx:key="id">
-      <view class="name">{{item.name}}</view>
-      <view class="real-name">{{item.realName}}</view>
+  <!-- 拆分滚动容器：每个标签一个独立容器 -->
+  <!-- 监管者容器 -->
+  <view class="character-list" wx:if="{{currentTab === 0}}">
+    <view class="character-card {{index === hunterList.length - 1 ? 'no-margin' : ''}}" 
+          wx:for="{{hunterList}}" wx:key="identity_id">
+      <image class="avatar" src="{{item.picture}}" mode="aspectFit" lazy-load="true"></image>
+      <view class="text-wrap">
+        <view class="name">{{item.name}}</view>
+        <view class="career">{{item.career}}</view>
+      </view>
     </view>
+    <view class="empty-tip" wx:if="{{hunterList.length === 0}}">暂无监管者数据</view>
+  </view>
+
+  <!-- 求生者容器 -->
+  <view class="character-list" wx:if="{{currentTab === 1}}">
+    <view class="character-card {{index === survivorList.length - 1 ? 'no-margin' : ''}}" 
+          wx:for="{{survivorList}}" wx:key="identity_id">
+      <image class="avatar" src="{{item.picture}}" mode="aspectFit" lazy-load="true"></image>
+      <view class="text-wrap">
+        <view class="name">{{item.name}}</view>
+        <view class="career">{{item.career}}</view>
+      </view>
+    </view>
+    <view class="empty-tip" wx:if="{{survivorList.length === 0}}">暂无求生者数据</view>
+  </view>
+
+  <!-- 人格脉络容器 -->
+  <view class="character-list" wx:if="{{currentTab === 2}}">
+    <view class="empty-tip">暂无人格脉络数据</view>
   </view>
 </view>
