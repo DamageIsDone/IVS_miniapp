@@ -1,53 +1,59 @@
 <!--index.wxml-->
 <navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 <scroll-view class="scrollarea" scroll-y type="list">
-  <!-- 原有测试按钮区域 -->
+  <!-- 用户信息区域（头像、昵称、游戏信息） -->
+  <view class="user-section">
+    <view class="user-info" wx:if="{{hasUserInfo}}">
+      <view class="avatar-container">
+        <image src="{{userInfo.avatarUrl}}" mode="aspectFill" class="avatar"></image>
+      </view>
+      <view class="info-container">
+        <view class="nickname">{{userInfo.nickName}}</view>
+        <view class="game-info" wx:if="{{bound}}">
+          <text>游戏名：{{boundPhone}}</text>
+          <text>游戏ID：{{userId}}</text>
+        </view>
+        <view class="game-info" wx:else>
+          <text>未绑定游戏账号</text>
+        </view>
+      </view>
+    </view>
+    <button wx:if="{{!hasUserInfo}}" type="primary" bindtap="getUserProfile">获取微信头像昵称</button>
+  </view>
+
+  <!-- 绑定/解绑按钮 -->
+  <view class="action-buttons" wx:if="{{hasUserInfo}}">
+    <button wx:if="{{!bound}}" type="warn" bindtap="showBindPopup">绑定账号</button>
+    <button wx:else type="default" bindtap="unbindAccount">解绑账号</button>
+  </view>
+
+  <!-- 测试区域（原有功能保留） -->
   <view class="test-section">
-    <button 
-      type="default" 
-      bindtap="gotoWiki"
-      style="margin-top: 30rpx; width: 80%;"
-    >
-      前往Wiki页面（测试用）
-    </button>
-    <button 
-      type="default" 
-      bindtap="gotoRecord"
-      style="width: 80%;"
-    >
-      前往Record页面（测试用）
-    </button>
+    <button type="default" bindtap="gotoWiki" style="margin-top: 30rpx; width: 80%;">前往Wiki页面（测试用）</button>
+    <button type="default" bindtap="gotoRecord" style="width: 80%;">前往Record页面（测试用）</button>
     <button type="primary" bindtap="testWechatLogin">测试微信登录</button>
     <view class="result">结果：{{result}}</view>
   </view>
 
-  <!-- 微信绑定功能区 -->
-  <view class="wechat-section">
-    <view class="userinfo" wx:if="{{hasUserInfo}}">
-      <image src="{{userInfo.avatarUrl}}" mode="aspectFill" class="avatar"></image>
-      <text class="nickname">{{userInfo.nickName}}</text>
+  <!-- 绑定弹窗 -->
+  <view class="popup" wx:if="{{showPopup}}">
+    <view class="popup-content">
+      <text>绑定已有账号</text>
+      <input 
+        placeholder="手机号" 
+        bindinput="onPhoneInput" 
+        value="{{phone}}"
+      />
+      <input 
+        placeholder="密码" 
+        password 
+        bindinput="onPasswordInput" 
+        value="{{password}}"
+      />
+      <view class="popup-btns">
+        <button bindtap="cancelBind">取消</button>
+        <button type="primary" bindtap="confirmBind">确认</button>
+      </view>
     </view>
-    <button wx:if="{{!hasUserInfo}}" type="primary" bindtap="getUserProfile">获取微信头像昵称</button>
-
-    <view class="binding-status">
-      <text>绑定状态：</text>
-      <text wx:if="{{bound}}">已绑定 (手机号: {{boundPhone}})</text>
-      <text wx:else>未绑定</text>
-    </view>
-
-    <button wx:if="{{!bound && hasUserInfo}}" type="warn" bindtap="showBindPopup">绑定账号</button>
   </view>
 </scroll-view>
-
-<!-- 绑定弹窗（fixed 定位，放在 scroll-view 外面） -->
-<view class="popup" wx:if="{{showPopup}}">
-  <view class="popup-content">
-    <text>绑定已有账号</text>
-    <input placeholder="手机号" bindinput="onPhoneInput" />
-    <input placeholder="密码" password bindinput="onPasswordInput" />
-    <view class="popup-btns">
-      <button bindtap="cancelBind">取消</button>
-      <button type="primary" bindtap="confirmBind">确认</button>
-    </view>
-  </view>
-</view>
