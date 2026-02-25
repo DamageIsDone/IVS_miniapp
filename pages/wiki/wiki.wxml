@@ -6,7 +6,13 @@
   <!-- 搜索栏 -->
   <view class="search-bar">
     <icon type="search" size="16" color="#999"></icon>
-    <input placeholder="搜索角色/职业/人格脉络" class="search-input" bindinput="onSearchInput" />
+    <input 
+      placeholder="搜索监管者/求生者/人格脉络" 
+      class="search-input" 
+      bindinput="onSearchInput" 
+      value="{{searchKeyword}}"
+    />
+    <text class="search-btn" bindtap="onSearchBtnClick">搜索</text>
   </view>
 
   <!-- 分类标签 -->
