@@ -1,6 +1,5 @@
 {
-  "usingComponents": {},
-  "navigationBarBackgroundColor": "#6c2d91",
-  "navigationBarTitleText": "Identity V",
-  "navigationBarTextStyle": "white"
+  "usingComponents": {
+    "navigation-bar": "/components/navigation-bar/navigation-bar"
+  }
 }

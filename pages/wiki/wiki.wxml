@@ -1,5 +1,9 @@
 <!--pages/wiki/wiki.wxml-->
 <view class="wiki-container">
+  <view class="fixed-header">
+    <navigation-bar title="Identity V"></navigation-bar>
+  </view>
+
   <!-- 搜索栏 -->
   <view class="search-bar">
     <icon type="search" size="16" color="#999"></icon>

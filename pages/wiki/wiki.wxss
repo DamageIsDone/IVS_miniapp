@@ -7,6 +7,15 @@
   overflow: hidden;
 }
 
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999; /* 确保在最上层 */
+  background-color: #F5F5F5; /* 背景色和页面一致，避免透传 */
+}
+
 .search-bar {
   display: flex;
   align-items: center;
