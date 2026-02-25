@@ -1,106 +1,106 @@
 // pages/wiki/wiki.js
+const app = getApp();
+
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-    currentTab: 0, // 默认选中第一个标签（监管者）
-    // 分类数据：索引0=监管者，1=求生者，2=人格脉络
-    categoryData: [
-      // 监管者数据
-      [
-        { id: 1, name: "摄影师", realName: "约瑟夫" },
-        { id: 2, name: "梦之女巫", realName: "伊德海拉" },
-        { id: 3, name: "红蝶", realName: "美智子" },
-        { id: 4, name: "杰克", realName: "开膛手" }
-      ],
-      // 求生者数据
-      [
-        { id: 101, name: "医生", realName: "艾米丽" },
-        { id: 102, name: "律师", realName: "弗雷迪" },
-        { id: 103, name: "园丁", realName: "艾玛" },
-        { id: 104, name: "调香师", realName: "薇拉" }
-      ],
-      // 人格脉络数据
-      [
-        { id: 201, name: "勇敢", realName: "攻击向" },
-        { id: 202, name: "执着", realName: "守椅向" },
-        { id: 203, name: "友善", realName: "辅助向" },
-        { id: 204, name: "冷静", realName: "运营向" }
-      ]
-    ],
-    currentList: [] // 当前显示的列表数据
+    currentTab: 0,
+    hunterList: [],    // 监管者列表
+    survivorList: [],  // 求生者列表
+    allIdentities: []
   },
 
-  // 切换标签的核心方法
-  switchTab(e) {
-    const tabIndex = Number(e.currentTarget.dataset.tab);
-    this.setData({
-      currentTab: tabIndex,
-      currentList: this.data.categoryData[tabIndex] // 切换为对应标签的数据
-    });
-  },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
   onLoad(options) {
-    this.setData({
-      currentList: this.data.categoryData[0]
+    this.getAllIdentities();
+  },
+
+  // 请求所有角色数据
+  getAllIdentities() {
+    const baseUrl = app.globalData.baseUrl;
+    wx.request({
+      url: `${baseUrl}/identities`,
+      method: 'GET',
+      timeout: 10000,
+      success: (res) => {
+        if (res.statusCode === 200 && res.data) {
+          this.setData({
+            allIdentities: res.data
+          });
+          // 初始化拆分两个列表（只执行一次）
+          this.initSplitList();
+        }
+      },
+      fail: (err) => {
+        console.error('请求失败详情：', err);
+        wx.showToast({
+          title: `请求失败：${err.errMsg}`,
+          icon: 'none',
+          duration: 3000
+        });
+      }
     });
   },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
+  // 拆分监管者/求生者列表（一次性拆分，避免重复计算）
+  initSplitList() {
+    const formatGender = (gender) => gender === 'Female' ? '女' : '男';
+    // 监管者列表
+    const hunterList = this.data.allIdentities
+      .filter(item => item.camp === 'Hunter')
+      .map(item => ({ ...item, gender: formatGender(item.gender) }));
+    // 求生者列表
+    const survivorList = this.data.allIdentities
+      .filter(item => item.camp === 'Survivor')
+      .map(item => ({ ...item, gender: formatGender(item.gender) }));
+    
+    this.setData({
+      hunterList,
+      survivorList
+    });
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({
-        selected: 'wiki'
-      });
+  // 切换标签：只切换显示的容器，不修改列表数据
+  switchTab(e) {
+    const tabIndex = parseInt(e.currentTarget.dataset.tab);
+    if (tabIndex === this.data.currentTab) return;
+    this.setData({
+      currentTab: tabIndex
+    });
+  },
+
+  // 搜索功能（适配拆分后的列表）
+  searchIdentity(str) {
+    if (!str) {
+      // 搜索为空时重新初始化列表
+      this.initSplitList();
+      return;
     }
+    wx.request({
+      url: `${app.globalData.baseUrl}/identities/search`,
+      method: 'GET',
+      data: { str },
+      success: (res) => {
+        if (res.statusCode === 200 && res.data) {
+          res.data.gender = res.data.gender === 'Female' ? '女' : '男';
+          // 根据搜索结果的camp，更新对应列表
+          if (res.data.camp === 'Hunter') {
+            this.setData({ hunterList: [res.data] });
+          } else if (res.data.camp === 'Survivor') {
+            this.setData({ survivorList: [res.data] });
+          }
+        } else {
+          // 搜索无结果时清空对应列表
+          if (this.data.currentTab === 0) {
+            this.setData({ hunterList: [] });
+          } else if (this.data.currentTab === 1) {
+            this.setData({ survivorList: [] });
+          }
+          wx.showToast({ title: '未找到角色', icon: 'none' });
+        }
+      }
+    });
   },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
+  onSearchInput(e) {
+    this.searchIdentity(e.detail.value.trim());
   }
-})
+});
