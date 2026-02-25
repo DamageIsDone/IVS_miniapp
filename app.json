@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/wiki/wiki",
-    "pages/record/record"
+    "pages/record/record",
+    "pages/add-record/add-record"
   ],
   "window": {
     "navigationBarTextStyle": "black",

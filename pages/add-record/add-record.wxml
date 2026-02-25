@@ -1,0 +1,101 @@
+<!-- 原生navigation-bar组件（必须放在最外层） -->
+<navigation-bar
+  title="添加历史战绩"
+  back-icon="black"
+  bindback="goBack"
+  color="#000000"
+  background="#ffffff"
+  loading="{{false}}"
+>
+  <view slot="right" class="nav-submit-btn" bindtap="onSubmit">
+    <text class="icon">✓</text>
+  </view>
+</navigation-bar>
+
+<view class="container">
+  <scroll-view class="content" scroll-y>
+    <!-- 监管者区域 -->
+    <view class="section">
+      <text class="section-title">监管者：</text>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectKillerPlayer">{{killerPlayer || '请选择玩家'}}</view>
+      </view>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectKillerRole">{{killerRole || '请选择角色'}}</view>
+        <view class="tag" bindtap="onSelectKillerTalent1">{{killerTalent1 || '请选择天赋1'}}</view>
+        <view class="tag" bindtap="onSelectKillerTalent2">{{killerTalent2 || '请选择天赋2'}}</view>
+      </view>
+    </view>
+
+    <!-- 求生者1 -->
+    <view class="section">
+      <text class="section-title">求生者1：</text>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectSurvivorPlayer" data-index="0">{{(survivors[0] && survivors[0].player) || '请选择玩家'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorResult" data-index="0">{{(survivors[0] && survivors[0].result) || '请选择结果'}}</view>
+      </view>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectSurvivorRole" data-index="0">{{(survivors[0] && survivors[0].role) || '请选择角色'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorTalent1" data-index="0">{{(survivors[0] && survivors[0].talent1) || '请选择天赋1'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorTalent2" data-index="0">{{(survivors[0] && survivors[0].talent2) || '请选择天赋2'}}</view>
+      </view>
+    </view>
+
+    <!-- 求生者2 -->
+    <view class="section">
+      <text class="section-title">求生者2：</text>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectSurvivorPlayer" data-index="1">{{(survivors[1] && survivors[1].player) || '请选择玩家'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorResult" data-index="1">{{(survivors[1] && survivors[1].result) || '请选择结果'}}</view>
+      </view>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectSurvivorRole" data-index="1">{{(survivors[1] && survivors[1].role) || '请选择角色'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorTalent1" data-index="1">{{(survivors[1] && survivors[1].talent1) || '请选择天赋1'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorTalent2" data-index="1">{{(survivors[1] && survivors[1].talent2) || '请选择天赋2'}}</view>
+      </view>
+    </view>
+
+    <!-- 求生者3 -->
+    <view class="section">
+      <text class="section-title">求生者3：</text>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectSurvivorPlayer" data-index="2">{{(survivors[2] && survivors[2].player) || '请选择玩家'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorResult" data-index="2">{{(survivors[2] && survivors[2].result) || '请选择结果'}}</view>
+      </view>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectSurvivorRole" data-index="2">{{(survivors[2] && survivors[2].role) || '请选择角色'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorTalent1" data-index="2">{{(survivors[2] && survivors[2].talent1) || '请选择天赋1'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorTalent2" data-index="2">{{(survivors[2] && survivors[2].talent2) || '请选择天赋2'}}</view>
+      </view>
+    </view>
+
+    <!-- 求生者4（新增） -->
+    <view class="section">
+      <text class="section-title">求生者4：</text>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectSurvivorPlayer" data-index="3">{{(survivors[3] && survivors[3].player) || '请选择玩家'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorResult" data-index="3">{{(survivors[3] && survivors[3].result) || '请选择结果'}}</view>
+      </view>
+      <view class="tag-row">
+        <view class="tag" bindtap="onSelectSurvivorRole" data-index="3">{{(survivors[3] && survivors[3].role) || '请选择角色'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorTalent1" data-index="3">{{(survivors[3] && survivors[3].talent1) || '请选择天赋1'}}</view>
+        <view class="tag" bindtap="onSelectSurvivorTalent2" data-index="3">{{(survivors[3] && survivors[3].talent2) || '请选择天赋2'}}</view>
+      </view>
+    </view>
+
+    <view style="height: 40rpx;"></view>
+  </scroll-view>
+
+  <!-- 底部选择器 -->
+  <view class="bottom-picker {{showBottomPicker ? 'show' : ''}}">
+    <view class="picker-header">
+      <text bindtap="closeBottomPicker">取消</text>
+      <text bindtap="confirmBottomPicker">确定</text>
+    </view>
+    <picker-view value="{{pickerValue}}" bindchange="onPickerChange" style="width: 100%; height: 300rpx;">
+      <picker-view-column>
+        <view wx:for="{{pickerOptions}}" wx:key="*this" style="line-height: 70rpx; text-align: center;">{{item}}</view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+</view>
