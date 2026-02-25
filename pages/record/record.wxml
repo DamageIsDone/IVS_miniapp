@@ -57,7 +57,12 @@
             <block wx:for="{{item.details}}" wx:for-item="detail" wx:key="detailKey">
               <view class="detail-item">
                 <text class="detail-icon">{{detail.role.includes('监管') ? '👁️' : '👤'}}</text>
-                <text class="detail-text">{{detail.role}}</text>
+                <text class="detail-text" 
+                bindtap="onShowRoleTalents"
+                data-pure-role="{{detail.pureRole}}"
+                data-talent="{{detail.talent}}">
+                {{detail.pureRole}}
+                </text>
                 <text class="detail-tag {{detail.tag.includes('全胜') || detail.tag.includes('逃脱') ? 'win-tag' : 'lose-tag'}}">{{detail.tag}}</text>
               </view>
             </block>
@@ -79,26 +84,27 @@
       <view class="modal-section">
         <text class="section-label">监管者：</text>
         <view class="tag-group">
-          <view class="tag-item" bindtap="onSelectRole" data-type="killer" data-value="摄影师">摄影师</view>
+          <view class="tag-item" bindtap="onSelectKillerRole" >{{editKillerRole || '未选择'}}</view>
         </view>
         <text class="section-sub">携带天赋：</text>
         <view class="tag-group">
-          <view class="tag-item" bindtap="onSelectTalent" data-type="killer" data-value="挽留">挽留</view>
-          <view class="tag-item" bindtap="onSelectTalent" data-type="killer" data-value="禁闭空间">禁闭空间</view>
+          <view class="tag-item" bindtap="onSelectKillerTalent" 
+          data-index="0">{{editKillerTalents[0] || '未选择'}}</view>
+          <view class="tag-item" bindtap="onSelectKillerTalent" data-index="1">{{editKillerTalents[1] || '未选择'}}</view>
         </view>
       </view>
 
       <!-- 求生者部分（循环显示） -->
-      <view class="modal-section" wx:for="{{editDetails}}" wx:key="index">
-        <text class="section-label">求生者：</text>
+      <view class="modal-section" wx:for="{{editDetails}}" wx:key="index" wx:for-index="surIndex">
+        <text class="section-label">求生者{{surIndex + 1}}：</text>
         <view class="tag-group">
-          <view class="tag-item" bindtap="onSelectResult" data-index="{{index}}" data-value="迷失">迷失</view>
-          <view class="tag-item" bindtap="onSelectSurvivor" data-index="{{index}}" data-value="{{item.survivor}}">{{item.survivor}}</view>
+          <view class="tag-item" bindtap="onSelectSurvivorResult" data-index="{{surIndex}}" >{{item.result || '未选择'}}</view>
+          <view class="tag-item" bindtap="onSelectSurvivorRole" data-index="{{surIndex}}" >{{item.survivor || '未选择'}} </view>
         </view>
         <text class="section-sub">携带天赋：</text>
         <view class="tag-group">
-          <view class="tag-item" bindtap="onSelectTalent" data-type="survivor" data-index="{{index}}" data-value="飞轮效应">飞轮效应</view>
-          <view class="tag-item" bindtap="onSelectTalent" data-type="survivor" data-index="{{index}}" data-value="化险为夷">化险为夷</view>
+          <view class="tag-item" bindtap="onSelectSurvivorTalent" data-index="{{surIndex}}"data-talent-index="0" >{{item.talents[0] || '未选择'}}</view>
+          <view class="tag-item" bindtap="onSelectSurvivorTalent" data-index="{{surIndex}}"data-talent-index="1" >{{item.talents[1] || '未选择'}}</view>
         </view>
       </view>
 
@@ -107,5 +113,47 @@
         <view class="action-btn cancel" bindtap="closeEditModal">取消</view>
       </view>
     </view>
+  </view>
+<!-- 新增：角色天赋详情弹窗 -->
+<view class="role-talent-modal {{showRoleTalentModal ? 'show' : ''}}" wx:if="{{showRoleTalentModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">详情</text>
+      </view>
+      <view class="modal-tip">
+        <text>单击角色或天赋可进入相关详情页</text>
+      </view>
+      <view class="modal-section">
+        <text class="section-label">角色：</text>
+        <view class="tag-group">
+          <view class="tag-item">{{currentRoleName}}</view>
+        </view>
+        <text class="section-sub">天赋1：</text>
+        <view class="tag-group">
+          <view class="tag-item">{{currentRoleTalents[0]}}</view>
+        </view>
+        <text class="section-sub">天赋2：</text>
+        <view class="tag-group">
+          <view class="tag-item">{{currentRoleTalents[1]}}</view>
+        </view>
+      </view>
+      <view class="modal-actions">
+        <view class="action-btn confirm" bindtap="closeRoleTalentModal">关闭</view>
+      </view>
+    </view>
+  </view>
+  <!-- 底部选择器（必须放在WXML最后，避免被遮挡） -->
+  <view class="bottom-picker {{showBottomPicker ? 'show' : ''}}">
+    <view class="picker-header">
+      <text bindtap="closeBottomPicker">取消</text>
+      <text bindtap="confirmBottomPicker">确定</text>
+    </view>
+    <picker-view value="{{pickerValue}}" bindchange="onPickerChange" style="width: 100%; height: 300rpx;">
+      <picker-view-column>
+        <view wx:for="{{pickerOptions}}" wx:key="*this" style="line-height: 50rpx; text-align: center;">
+          {{item}}
+        </view>
+      </picker-view-column>
+    </picker-view>
   </view>
 </view>

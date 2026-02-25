@@ -189,7 +189,7 @@ page {
 .detail-item {
   display: flex;
   align-items: center;
-  padding: 8rpx 0;
+  padding: 5rpx 0;
   font-size: 26rpx;
 }
 .detail-icon {
@@ -333,4 +333,125 @@ page {
 .modal-actions .cancel {
   background-color: #f0f0f0;
   color: #333;
+}
+
+/* 角色天赋详情弹窗样式 */
+.role-talent-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.role-talent-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.role-talent-modal .modal-content {
+  width: 80%;
+  max-height: 80vh;
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 10rpx 30rpx rgba(0,0,0,0.2);
+  overflow-y: auto;
+}
+
+.role-talent-modal .modal-header {
+  text-align: center;
+  margin-bottom: 20rpx;
+}
+
+.role-talent-modal .modal-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.role-talent-modal .modal-tip {
+  text-align: center;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 30rpx;
+}
+
+.role-talent-modal .modal-section {
+  margin-bottom: 30rpx;
+}
+
+.role-talent-modal .section-label,
+.role-talent-modal .section-sub {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 15rpx;
+  display: block;
+}
+
+.role-talent-modal .tag-group {
+  display: flex;
+  flex-wrap: wrap;
+  /* gap: 15rpx; */
+  margin-bottom: 10rpx;
+}
+
+.role-talent-modal .tag-item {
+  background-color: #9C27B0;
+  color: #fff;
+  font-size: 24rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+}
+
+.role-talent-modal .modal-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 40rpx;
+}
+
+.role-talent-modal .confirm {
+  background-color: #9C27B0;
+  color: #fff;
+  padding: 15rpx 40rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+}
+/* 底部选择器 */
+.bottom-picker {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  border-top-left-radius: 16rpx;
+  border-top-right-radius: 16rpx;
+  z-index: 9999;
+  transform: translateY(100%);
+  transition: all 0.3s ease;
+  height: 500rpx;
+}
+
+.bottom-picker.show {
+  transform: translateY(0);
+}
+
+.picker-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 15rpx 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.picker-header text {
+  font-size: 28rpx;
+  color: #9C27B0;
 }
