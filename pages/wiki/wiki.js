@@ -5,14 +5,17 @@ Page({
     currentTab: 0,
     hunterList: [],    // 监管者列表
     survivorList: [],  // 求生者列表
-    talentList: [],    // 新增：人格脉络列表
+    talentList: [],    // 人格脉络列表
     allIdentities: [],
-    allTalents: []     // 新增：所有人格脉络原始数据
+    allTalents: [],
+    // 新增：弹窗相关数据
+    showTalentDetail: false, // 是否显示人格脉络详情弹窗
+    currentTalent: null      // 当前选中的人格脉络数据
   },
 
   onLoad(options) {
     this.getAllIdentities();
-    this.getAllTalents(); // 新增：加载人格脉络数据
+    this.getAllTalents();
   },
 
   // 请求所有角色数据
@@ -41,18 +44,18 @@ Page({
     });
   },
 
-  // 新增：请求所有人格脉络数据
+  // 请求所有人格脉络数据
   getAllTalents() {
     const baseUrl = app.globalData.baseUrl;
     wx.request({
-      url: `${baseUrl}/talents`, // 对应后端TalentController的根路径
+      url: `${baseUrl}/talents`,
       method: 'GET',
       timeout: 10000,
       success: (res) => {
         if (res.statusCode === 200 && res.data) {
           this.setData({
             allTalents: res.data,
-            talentList: res.data // 初始化人格脉络列表
+            talentList: res.data
           });
         }
       },
@@ -70,11 +73,9 @@ Page({
   // 拆分监管者/求生者列表
   initSplitList() {
     const formatGender = (gender) => gender === 'Female' ? '女' : '男';
-    // 监管者列表
     const hunterList = this.data.allIdentities
       .filter(item => item.camp === 'Hunter')
       .map(item => ({ ...item, gender: formatGender(item.gender) }));
-    // 求生者列表
     const survivorList = this.data.allIdentities
       .filter(item => item.camp === 'Survivor')
       .map(item => ({ ...item, gender: formatGender(item.gender) }));
@@ -92,7 +93,6 @@ Page({
     this.setData({
       currentTab: tabIndex
     });
-    // 切换到人格脉络标签时，如果搜索框有内容，重新触发搜索
     if (tabIndex === 2) {
       const pages = getCurrentPages();
       const currentPage = pages[pages.length - 1];
@@ -103,17 +103,15 @@ Page({
     }
   },
 
-  // 搜索功能（适配人格脉络）
+  // 搜索功能
   searchIdentity(str) {
     if (!str) {
-      // 搜索为空时重置所有列表
       this.initSplitList();
-      this.setData({ talentList: this.data.allTalents }); // 重置人格脉络列表
+      this.setData({ talentList: this.data.allTalents });
       return;
     }
 
     const baseUrl = app.globalData.baseUrl;
-    // 先尝试搜索角色（监管者/求生者）
     wx.request({
       url: `${baseUrl}/identities/search`,
       method: 'GET',
@@ -127,24 +125,22 @@ Page({
             this.setData({ survivorList: [res.data], hunterList: [], talentList: [] });
           }
         } else {
-          // 角色搜索无结果，尝试搜索人格脉络
           this.searchTalent(str);
         }
       },
       fail: () => {
-        // 角色搜索失败，尝试搜索人格脉络
         this.searchTalent(str);
       }
     });
   },
 
-  // 新增：搜索人格脉络
+  // 搜索人格脉络
   searchTalent(str) {
     const baseUrl = app.globalData.baseUrl;
     wx.request({
-      url: `${baseUrl}/talents/search`, // 对应后端getTalentByName接口
+      url: `${baseUrl}/talents/search`,
       method: 'GET',
-      data: { name: str }, // 后端参数名是name，不是str
+      data: { name: str },
       success: (res) => {
         if (res.statusCode === 200 && res.data) {
           this.setData({
@@ -153,7 +149,6 @@ Page({
             survivorList: []
           });
         } else {
-          // 所有人都没找到
           this.setData({
             hunterList: [],
             survivorList: [],
@@ -176,5 +171,22 @@ Page({
 
   onSearchInput(e) {
     this.searchIdentity(e.detail.value.trim());
+  },
+
+  // 新增：点击人格脉络卡片，显示详情弹窗
+  showTalentDetail(e) {
+    const talent = e.currentTarget.dataset.talent;
+    this.setData({
+      currentTalent: talent,
+      showTalentDetail: true
+    });
+  },
+
+  // 新增：关闭人格脉络详情弹窗
+  closeTalentDetail() {
+    this.setData({
+      showTalentDetail: false,
+      currentTalent: null
+    });
   }
 });

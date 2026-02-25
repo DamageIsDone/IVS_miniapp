@@ -11,8 +11,8 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 999;
-  background-color: #F5F5F5;
+  z-index: 999; 
+  background-color: #F5F5F5; 
 }
 
 .search-bar {
@@ -69,9 +69,10 @@
   padding-bottom: 20rpx;
 }
 
+/* 卡片 */
 .character-card {
-  width: 90%;
-  max-width: 700rpx;
+  width: 90%; 
+  max-width: 700rpx; 
   background-color: #fff;
   border-radius: 12rpx;
   padding: 24rpx 20rpx;
@@ -79,26 +80,31 @@
   margin-bottom: 24rpx;
   display: flex;
   align-items: center;
-  gap: 24rpx;
+  gap: 24rpx; 
   box-sizing: border-box;
-  height: 400rpx;
+  height: 400rpx; 
+  /* 新增：点击反馈 */
+  cursor: pointer;
 }
 
 .character-card.no-margin {
   margin-bottom: 0;
 }
 
+/* 图片：保持尺寸，保证完整显示 */
 .character-card .avatar {
   width: 300rpx;
   height: 300rpx;
   border-radius: 8rpx;
   flex-shrink: 0;
   object-fit: contain;
-  background-color: #e8e8e8; /* 浅灰色背景，和白色卡片区分开 */
-  border: 2rpx solid #d0d0d0; /* 浅灰色边框 */
-  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.08); /* 轻微阴影，增加层次感 */
+  /* 方案一：背景色+边框 */
+  background-color: #e8e8e8;
+  border: 2rpx solid #d0d0d0;
+  box-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.08);
 }
 
+/* 文字区域：占满剩余空间，减少右侧空白 */
 .character-card .text-wrap {
   flex: 1;
   display: flex;
@@ -109,7 +115,7 @@
 }
 
 .character-card .name {
-  font-size: 42rpx;
+  font-size: 42rpx; 
   color: #333;
   font-weight: 500;
   margin-bottom: 12rpx;
@@ -127,4 +133,79 @@
   color: #999;
   margin-top: 100rpx;
   text-align: center;
+}
+
+/* 新增：人格脉络详情弹窗样式 */
+.talent-detail-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.talent-detail-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 85%;
+  max-width: 650rpx;
+  background-color: #fff;
+  border-radius: 16rpx;
+  padding: 40rpx 30rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+  z-index: 1001;
+  box-sizing: border-box;
+}
+
+.popup-close {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  font-size: 36rpx;
+  color: #999;
+  cursor: pointer;
+}
+
+.popup-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.popup-avatar {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 8rpx;
+  object-fit: contain;
+  background-color: #e8e8e8;
+  border: 2rpx solid #d0d0d0;
+  margin-bottom: 10rpx;
+}
+
+.popup-name {
+  font-size: 40rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 20rpx;
+}
+
+.popup-label {
+  align-self: flex-start;
+  font-size: 30rpx;
+  color: #666;
+  font-weight: 500;
+  margin-top: 10rpx;
+}
+
+.popup-value {
+  align-self: flex-start;
+  font-size: 28rpx;
+  color: #333;
+  line-height: 1.5;
+  word-wrap: break-word;
 }

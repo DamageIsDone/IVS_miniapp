@@ -53,8 +53,10 @@
 
   <!-- 人格脉络容器 -->
   <view class="character-list" wx:if="{{currentTab === 2}}">
+    <!-- 新增 bindtap 和 data-talent 属性 -->
     <view class="character-card {{index === talentList.length - 1 ? 'no-margin' : ''}}" 
-          wx:for="{{talentList}}" wx:key="talent_id">
+          wx:for="{{talentList}}" wx:key="talent_id"
+          bindtap="showTalentDetail" data-talent="{{item}}">
       <image class="avatar" src="{{item.picture}}" mode="aspectFit" lazy-load="true"></image>
       <view class="text-wrap">
         <view class="name">{{item.name}}</view>
@@ -62,5 +64,21 @@
       </view>
     </view>
     <view class="empty-tip" wx:if="{{talentList.length === 0}}">暂无人格脉络数据</view>
+  </view>
+
+  <!-- 新增：人格脉络详情弹窗 -->
+  <view class="talent-detail-mask" wx:if="{{showTalentDetail}}" bindtap="closeTalentDetail"></view>
+  <view class="talent-detail-popup" wx:if="{{showTalentDetail}}">
+    <view class="popup-close" bindtap="closeTalentDetail">✕</view>
+    <view class="popup-content">
+      <image class="popup-avatar" src="{{currentTalent.picture}}" mode="aspectFit"></image>
+      <view class="popup-name">{{currentTalent.name}}</view>
+      <view class="popup-label">所属阵营</view>
+      <view class="popup-value">{{currentTalent.camp === 'Hunter' ? '监管者' : '求生者'}}</view>
+      <view class="popup-label">描述</view>
+      <view class="popup-value">{{currentTalent.description}}</view>
+      <view class="popup-label">效果</view>
+      <view class="popup-value">{{currentTalent.effect}}</view>
+    </view>
   </view>
 </view>
