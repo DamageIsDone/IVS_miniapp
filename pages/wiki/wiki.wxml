@@ -1,4 +1,3 @@
-<!--pages/wiki/wiki.wxml-->
 <view class="wiki-container">
   <view class="fixed-header">
     <navigation-bar title="Identity V"></navigation-bar>
@@ -7,7 +6,7 @@
   <!-- 搜索栏 -->
   <view class="search-bar">
     <icon type="search" size="16" color="#999"></icon>
-    <input placeholder="搜索角色/职业" class="search-input" bindinput="onSearchInput" />
+    <input placeholder="搜索角色/职业/人格脉络" class="search-input" bindinput="onSearchInput" />
   </view>
 
   <!-- 分类标签 -->
@@ -26,7 +25,6 @@
     </view>
   </view>
 
-  <!-- 拆分滚动容器：每个标签一个独立容器 -->
   <!-- 监管者容器 -->
   <view class="character-list" wx:if="{{currentTab === 0}}">
     <view class="character-card {{index === hunterList.length - 1 ? 'no-margin' : ''}}" 
@@ -55,6 +53,14 @@
 
   <!-- 人格脉络容器 -->
   <view class="character-list" wx:if="{{currentTab === 2}}">
-    <view class="empty-tip">暂无人格脉络数据</view>
+    <view class="character-card {{index === talentList.length - 1 ? 'no-margin' : ''}}" 
+          wx:for="{{talentList}}" wx:key="talent_id">
+      <image class="avatar" src="{{item.picture}}" mode="aspectFit" lazy-load="true"></image>
+      <view class="text-wrap">
+        <view class="name">{{item.name}}</view>
+        <view class="career">{{item.description}}</view>
+      </view>
+    </view>
+    <view class="empty-tip" wx:if="{{talentList.length === 0}}">暂无人格脉络数据</view>
   </view>
 </view>
