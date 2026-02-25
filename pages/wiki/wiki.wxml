@@ -28,7 +28,8 @@
   <!-- 监管者容器 -->
   <view class="character-list" wx:if="{{currentTab === 0}}">
     <view class="character-card {{index === hunterList.length - 1 ? 'no-margin' : ''}}" 
-          wx:for="{{hunterList}}" wx:key="identity_id">
+          wx:for="{{hunterList}}" wx:key="identity_id"
+          bindtap="showIdentityDetail" data-identity="{{item}}">
       <image class="avatar" src="{{item.picture}}" mode="aspectFit" lazy-load="true"></image>
       <view class="text-wrap">
         <view class="name">{{item.name}}</view>
@@ -41,7 +42,8 @@
   <!-- 求生者容器 -->
   <view class="character-list" wx:if="{{currentTab === 1}}">
     <view class="character-card {{index === survivorList.length - 1 ? 'no-margin' : ''}}" 
-          wx:for="{{survivorList}}" wx:key="identity_id">
+          wx:for="{{survivorList}}" wx:key="identity_id"
+          bindtap="showIdentityDetail" data-identity="{{item}}">
       <image class="avatar" src="{{item.picture}}" mode="aspectFit" lazy-load="true"></image>
       <view class="text-wrap">
         <view class="name">{{item.name}}</view>
@@ -53,7 +55,6 @@
 
   <!-- 人格脉络容器 -->
   <view class="character-list" wx:if="{{currentTab === 2}}">
-    <!-- 新增 bindtap 和 data-talent 属性 -->
     <view class="character-card {{index === talentList.length - 1 ? 'no-margin' : ''}}" 
           wx:for="{{talentList}}" wx:key="talent_id"
           bindtap="showTalentDetail" data-talent="{{item}}">
@@ -66,7 +67,7 @@
     <view class="empty-tip" wx:if="{{talentList.length === 0}}">暂无人格脉络数据</view>
   </view>
 
-  <!-- 新增：人格脉络详情弹窗 -->
+  <!-- 人格脉络详情弹窗 -->
   <view class="talent-detail-mask" wx:if="{{showTalentDetail}}" bindtap="closeTalentDetail"></view>
   <view class="talent-detail-popup" wx:if="{{showTalentDetail}}">
     <view class="popup-close" bindtap="closeTalentDetail">✕</view>
@@ -79,6 +80,82 @@
       <view class="popup-value">{{currentTalent.description}}</view>
       <view class="popup-label">效果</view>
       <view class="popup-value">{{currentTalent.effect}}</view>
+    </view>
+  </view>
+
+  <!-- 角色详情弹窗（最终版） -->
+  <view class="identity-detail-mask" wx:if="{{showIdentityDetail}}" bindtap="closeIdentityDetail"></view>
+  <view class="identity-detail-popup" wx:if="{{showIdentityDetail}}">
+    <!-- 关闭按钮 -->
+    <view class="popup-close" bindtap="closeIdentityDetail">✕</view>
+    
+    <!-- 加载状态 -->
+    <view class="loading-wrap" wx:if="{{loadingDetail}}">
+      <view class="loading">加载中...</view>
+    </view>
+
+    <!-- 详情内容 -->
+    <view class="identity-popup-content" wx:if="{{!loadingDetail && currentIdentity}}">
+      <!-- 基础信息 -->
+      <view class="basic-info">
+        <image class="popup-avatar" src="{{currentIdentity.picture}}" mode="aspectFit"></image>
+        <view class="popup-name">{{currentIdentity.name}}</view>
+        <view class="popup-career">{{currentIdentity.career}}</view>
+        
+        <view class="info-row">
+          <view class="info-label">阵营：</view>
+          <view class="info-value">{{currentIdentity.camp === 'Hunter' ? '监管者' : '求生者'}}</view>
+        </view>
+        <view class="info-row">
+          <view class="info-label">性别：</view>
+          <view class="info-value">{{currentIdentity.genderText}}</view> <!-- 修复性别显示 -->
+        </view>
+        <view class="info-row" wx:if="{{currentIdentity.birthday}}">
+          <view class="info-label">生日：</view>
+          <view class="info-value">{{currentIdentity.birthday}}</view>
+        </view>
+      </view>
+
+      <!-- 外在特质 -->
+      <view class="module-wrap" wx:if="{{identityDistinctions.length > 0}}">
+        <view class="module-title">外在特质</view>
+        <view class="module-content">
+          <view class="feature-item" wx:for="{{identityDistinctions}}" wx:key="distinction_id">
+            <image class="feature-img" src="{{item.picture}}" mode="aspectFit"></image>
+            <view class="feature-name">{{item.name}}</view>
+            <view class="feature-desc">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 监管者技能 -->
+      <view class="module-wrap" wx:if="{{currentIdentity.camp === 'Hunter' && identitySkills.length > 0}}">
+        <view class="module-title">实体能力</view>
+        <view class="module-content">
+          <view class="feature-item" wx:for="{{identitySkills}}" wx:key="skill_id">
+            <image class="feature-img" src="{{item.picture}}" mode="aspectFit"></image>
+            <view class="feature-name">{{item.name}}</view>
+            <view class="feature-desc">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 求生者手持物 -->
+      <view class="module-wrap" wx:if="{{currentIdentity.camp === 'Survivor' && identityHandhelds.length > 0}}">
+        <view class="module-title">手持物</view>
+        <view class="module-content">
+          <view class="feature-item" wx:for="{{identityHandhelds}}" wx:key="handheld_id">
+            <image class="feature-img" src="{{item.picture}}" mode="aspectFit"></image>
+            <view class="feature-name">{{item.name}}</view>
+            <view class="feature-desc">{{item.description}}</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空数据提示 -->
+      <view class="empty-module" wx:if="{{identityDistinctions.length === 0 && identitySkills.length === 0 && identityHandhelds.length === 0}}">
+        暂无详细信息
+      </view>
     </view>
   </view>
 </view>
