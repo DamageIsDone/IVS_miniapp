@@ -3,7 +3,8 @@
     "pages/index/index",
     "pages/wiki/wiki",
     "pages/record/record",
-    "pages/add-record/add-record"
+    "pages/add-record/add-record",
+    "pages/rank/rank"
   ],
   "window": {
     "navigationBarTextStyle": "black",
