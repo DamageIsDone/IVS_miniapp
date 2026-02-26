@@ -90,10 +90,25 @@ Component({
       })
     },
     back() {
+      
       const data = this.data
-      if (data.delta) {
+      const pages = getCurrentPages()
+      // 如果页面栈深度小于等于 delta，说明无法返回上一页，则跳转到首页
+      if (pages.length <= data.delta) {
+        wx.reLaunch({
+          url: '/pages/index/index',
+          fail: (err) => {
+            console.error('跳转首页失败', err)
+          }
+        })
+      } else {
         wx.navigateBack({
-          delta: data.delta
+          delta: data.delta,
+          fail: (err) => {
+            console.error('navigateBack失败', err)
+            // 降级处理：尝试跳转首页
+            wx.reLaunch({ url: '/pages/index/index' })
+          }
         })
       }
       this.triggerEvent('back', { delta: data.delta }, {})
