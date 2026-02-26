@@ -1,1 +1,69 @@
-/* pages/rank/rank.wxss */
+/* 页面容器 */
+.rank-container {
+  background: #fff;
+  min-height: 100vh;
+  padding: 0 20rpx;
+}
+
+/* 标签切换栏 */
+.tab-wrap {
+  display: flex;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+  margin: 20rpx 0;
+}
+.tab-item {
+  flex: 1;
+  text-align: center;
+  line-height: 70rpx;
+  font-size: 28rpx;
+  color: #666;
+  border-radius: 8rpx;
+}
+.tab-item.active {
+  background: #6C5CE7;
+  color: #fff;
+}
+
+/* 排行榜列表 */
+.rank-list {
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+.rank-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+.rank-item:last-child {
+  border-bottom: none;
+}
+
+/* 排名数字 */
+.rank-num {
+  width: 80rpx;
+  text-align: center;
+  font-size: 28rpx;
+  color: #999;
+}
+.rank-num:nth-child(-n+3) {
+  color: #6C5CE7;
+  font-weight: bold;
+}
+
+/* 选手名称 */
+.rank-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+/* 胜率 */
+.rank-rate {
+  width: 300rpx;
+  text-align: right;
+  font-size: 28rpx;
+  color: #333;
+}

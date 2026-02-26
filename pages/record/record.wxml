@@ -21,11 +21,11 @@
     <!-- 数据概览卡片 -->
     <view class="stats-card">
       <view class="stats-row">
-        <text class="stats-label">监管者胜率：75.00%</text>
+        <text class="stats-label">监管者胜率：{{hunterStats.winRate}}</text>
         <text class="stats-sub">常用角色：{{hunter.career}}</text>
       </view>
       <view class="stats-row">
-        <text class="stats-label">求生者胜率：100.00%</text>
+        <text class="stats-label">求生者胜率：{{survivorStats.winRate}}</text>
         <text class="stats-sub">常用角色：{{survivor.career}}</text>
       </view>
       <!-- 排行榜按钮 -->
@@ -37,6 +37,9 @@
 
   <!-- 可滑动的战绩列表（留出顶部固定区域的间距） -->
   <scroll-view class="record-list-container" scroll-y="true">
+    <view class="tip" wx:if="{{!records.length}}">
+    暂无历史战绩
+    </view>
     <view class="record-list">
       <block wx:for="{{records}}" wx:key="game_id">
         <view class="record-item {{item.type}}"
