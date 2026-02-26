@@ -1,53 +1,105 @@
 <!--index.wxml-->
 <navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 <scroll-view class="scrollarea" scroll-y type="list">
-  <!-- 原有测试按钮区域 -->
-  <view class="test-section">
-    <button 
-      type="default" 
-      bindtap="gotoWiki"
-      style="margin-top: 30rpx; width: 80%;"
-    >
-      前往Wiki页面（测试用）
-    </button>
-    <button 
-      type="default" 
-      bindtap="gotoRecord"
-      style="width: 80%;"
-    >
-      前往Record页面（测试用）
-    </button>
-    <button type="primary" bindtap="testWechatLogin">测试微信登录</button>
-    <view class="result">结果：{{result}}</view>
+
+  <!-- 用户信息卡片（集成绑定/解绑按钮） -->
+  <view class="user-card">
+    <view class="user-info" wx:if="{{hasUserInfo}}">
+      <view class="avatar-wrapper">
+        <image src="{{userInfo.avatarUrl}}" mode="aspectFill" class="avatar"></image>
+      </view>
+      <view class="info-container">
+        <text class="nickname">{{userInfo.nickName}}</text>
+        <view class="game-info" wx:if="{{bound}}">
+          <text class="label">游戏名：{{boundPhone}}</text>
+          <text class="label">ID：{{userId}}</text>
+        </view>
+        <view class="game-info" wx:else>
+          <text class="label">未绑定游戏账号</text>
+        </view>
+      </view>
+      <view class="action-btn">
+        <button wx:if="{{!bound}}" class="btn-bind" bindtap="showBindPopup">绑定</button>
+        <button wx:else class="btn-unbind" bindtap="unbindAccount">解绑</button>
+      </view>
+    </view>
+    <button wx:if="{{!hasUserInfo}}" class="get-user-btn" bindtap="getUserProfile">获取微信头像昵称</button>
   </view>
 
-  <!-- 微信绑定功能区 -->
-  <view class="wechat-section">
-    <view class="userinfo" wx:if="{{hasUserInfo}}">
-      <image src="{{userInfo.avatarUrl}}" mode="aspectFill" class="avatar"></image>
-      <text class="nickname">{{userInfo.nickName}}</text>
+  <!-- 签到卡片（左侧累计天数，右侧签到按钮） -->
+  <view class="sign-card" >
+    <view class="sign-left">
+      <text class="sign-days">{{signTotalDays}}</text>
+      <text class="sign-text">天</text>
+      <text class="sign-slogan">~要不要抽个签(◕‿◕)</text>
     </view>
-    <button wx:if="{{!hasUserInfo}}" type="primary" bindtap="getUserProfile">获取微信头像昵称</button>
-
-    <view class="binding-status">
-      <text>绑定状态：</text>
-      <text wx:if="{{bound}}">已绑定 (手机号: {{boundPhone}})</text>
-      <text wx:else>未绑定</text>
+    <view class="sign-right">
+      <button 
+        wx:if="{{!signedToday}}" 
+        class="btn-sign" 
+        bindtap="handleSign"
+        loading="{{signLoading}}"
+      >签到</button>
+      <button wx:else class="btn-sign disabled" disabled>今日已签</button>
     </view>
-
-    <button wx:if="{{!bound && hasUserInfo}}" type="warn" bindtap="showBindPopup">绑定账号</button>
   </view>
-</scroll-view>
 
-<!-- 绑定弹窗（fixed 定位，放在 scroll-view 外面） -->
-<view class="popup" wx:if="{{showPopup}}">
-  <view class="popup-content">
-    <text>绑定已有账号</text>
-    <input placeholder="手机号" bindinput="onPhoneInput" />
-    <input placeholder="密码" password bindinput="onPasswordInput" />
+  <!-- 三个功能入口 -->
+  <view class="feature-grid">
+    <view class="feature-item" bindtap="gotoWiki">
+      <image class="feature-icon" src="../../components/assets/icon/wiki.png" mode="aspectFill"></image>
+      <text class="feature-label">Wiki</text>
+    </view>
+    <view class="feature-item" bindtap="checkAndGotoRecord">
+      <image class="feature-icon" src="../../components/assets/icon/record.png" mode="aspectFill"></image>
+      <text class="feature-label">Record</text>
+    </view>
+    <view class="feature-item" bindtap="showDetailPopup">
+      <image class="feature-icon" src="../../components/assets/icon/detail.png" mode="aspectFill"></image>
+      <text class="feature-label">详情</text>
+    </view>
+  </view>
+
+<!-- 抽签卡片（可反复点击换一个） -->
+<view class="fortune-card">
+  <text class="fortune-title">今日上上签</text>
+  <text class="fortune-text">{{todayFortune.text}}</text>
+  <view class="fortune-reload" bindtap="drawFortune">换一个</view>
+</view>
+
+
+
+  <!-- 绑定弹窗 -->
+  <view class="popup" wx:if="{{showPopup}}" bindtap="cancelBind" data-type="mask">
+    <view class="popup-content" catchtap="stopPropagation">
+      <view class="popup-header">
+        <text class="popup-title">绑定已有账号</text>
+      </view>
+      <view class="input-group">
+        <input placeholder="手机号" bindinput="onPhoneInput" value="{{phone}}" />
+        <input placeholder="密码" password bindinput="onPasswordInput" value="{{password}}" />
+      </view>
+      <view class="popup-btns">
+        <button class="btn-cancel" bindtap="cancelBind">取消</button>
+        <button class="btn-confirm" bindtap="confirmBind">确认</button>
+      </view>
+    </view>
+  </view>
+
+ <!-- 详情弹窗 -->
+<view class="popup" wx:if="{{showDetail}}" bindtap="hideDetailPopup" data-type="mask">
+  <view class="popup-content detail-content" catchtap="stopPropagation">
+    <view class="detail-header">
+      <text class="detail-title">关于 IVS</text>
+    </view>
+    <view class="detail-body">
+      <view>Copyright © 2026 CS2206_XSY, CS2204_LYJ, SE2203_LXY</view>
+      <view>All Rights Reserved.</view>
+      <view>Special thanks to NetEase's Identity V.</view>
+    </view>
     <view class="popup-btns">
-      <button bindtap="cancelBind">取消</button>
-      <button type="primary" bindtap="confirmBind">确认</button>
+      <button class="btn-confirm" bindtap="hideDetailPopup">关闭</button>
     </view>
   </view>
 </view>
+</scroll-view>

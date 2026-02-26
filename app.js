@@ -2,6 +2,6 @@
 
 App({
   globalData: {
-    baseUrl: 'http://192.168.1.18:8080'
+    baseUrl: 'http://192.168.31.178:8080'
   }
 });
