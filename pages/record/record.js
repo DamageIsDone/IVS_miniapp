@@ -5,6 +5,8 @@ Page({
    * 页面的初始数据
    */
   data: {
+    userId:null,
+    message:"",
     originRecords:[],
     hunter:null,// 最常用监管者
     survivor: null ,// 最常用求生者
@@ -74,7 +76,7 @@ Page({
   },
 
   getData() {
-    const userId = this.data.currentUserId;
+    const userId = this.data.UserId ||1;
     const baseUrl = app.globalData.baseUrl;
     wx.request({
     url: `${baseUrl}/uits`, // 后端查询所有U_I_T的接口
@@ -87,7 +89,7 @@ Page({
     }
   });
     wx.request({
-      url: `http://localhost:8080/talents`,
+      url: `${baseUrl}/talents`,
       method: 'GET',
       success: (res) => {
         const validTalents = res.data.filter(item => item.name && item.camp);
@@ -105,7 +107,7 @@ Page({
       fail: (err) => reject(err)
     });
     wx.request({
-      url: `http://localhost:8080/identities`,
+      url: `${baseUrl}/identities`,
       method: 'GET',
       success: (res) => {
         wx.hideLoading();
@@ -126,7 +128,7 @@ Page({
       }
     });
     wx.request({
-      url: `http://localhost:8080/games/user/${userId}/most-used-hunter`,
+      url: `${baseUrl}/games/user/${userId}/most-used-hunter`,
       method: "GET",
       success: (res) => {
         console.log('success');
@@ -144,7 +146,7 @@ Page({
       },
     });
     wx.request({
-      url: `http://localhost:8080/games/user/2/most-used-survivor`,
+      url: `${baseUrl}/games/user/${userId}/most-used-survivor`,
       method: "GET",
       success: (res) => {
         console.log('success');
@@ -164,7 +166,7 @@ Page({
     //发起网络请求获取数据
     wx.request({
       //请求接口地址
-      url: 'http://localhost:8080/games/user?user_id=1',
+      url: `${baseUrl}/games/user?user_id=1`,
       //请求方式
       method: 'GET',
       //请求参数
@@ -1132,16 +1134,49 @@ onLoad(options) {
 },
   // ========== 新增：删除战绩逻辑 ==========
   deleteRecord(index) {
+    const pageData = this.data;
+    const baseUrl = app.globalData.baseUrl;
+    const currentEditIndex = typeof pageData.currentIndex === 'number' ? pageData.currentIndex : -1;
+    const safeRecords = Array.isArray(pageData.records) ? pageData.records : [];
+    const currentRecord = { ...safeRecords[currentEditIndex] };
+    const gameId = Number(currentRecord.game_id) || 0;
+    console.log(gameId);
     wx.showModal({
       title: '确认删除',
       content: '是否确定删除这条战绩？删除后不可恢复',
       success: (res) => {
         if (res.confirm) {
           // 确认删除，从数组中移除该条数据
-          const records = this.data.records;
-          records.splice(index, 1); // 删除索引为index的元素
-          this.setData({ records });
-          wx.showToast({ title: '删除成功', icon: 'success' });
+          
+
+          wx.request({
+            url: `${baseUrl}/games/delete?game_id=${gameId}`, // 后端删除接口地址
+            method: 'DELETE', // 注意：方法是DELETE（和后端@DeleteMapping对应）
+            data: {
+            },
+            success: (res) => {
+              wx.hideLoading();
+              console.log('删除战绩响应：', res);
+              
+              // 根据后端返回状态码处理
+              if (res.statusCode === 200) {
+                wx.showToast({ title: '删除成功', icon: 'success' });
+                // 刷新战绩列表
+                this.getData();
+              } else if (res.statusCode === 404) {
+                wx.showToast({ title: '战绩不存在', icon: 'none' });
+              } else if (res.statusCode === 400) {
+                wx.showToast({ title: '参数错误：' + (res.data || ''), icon: 'none' });
+              } else {
+                wx.showToast({ title: '删除失败：' + (res.data?.message || res.errMsg), icon: 'none' });
+              }
+            },
+            fail: (err) => {
+              wx.hideLoading();
+              console.error('删除战绩请求失败：', err);
+              wx.showToast({ title: '网络错误：' + err.errMsg, icon: 'none' });
+            }
+          });
         }
       }
     });
@@ -1221,6 +1256,17 @@ onLoad(options) {
       url: '/pages/rank/rank' // 确保路径正确
   });
   },
+  onRefresh(){
+    // this.getData();
+    wx.showToast({ title: '刷新成功', icon: 'success' });
+  },
+  getUid() {
+    const userId = wx.getStorageSync('userId');
+    this.setData({ 
+      userId: userId,
+      message: userId ? `当前 UID: ${userId}` : '未绑定账号，请先到首页绑定'
+    });
+  },
   /**
    * 生命周期函数--监听页面加载
    */
@@ -1244,6 +1290,8 @@ onLoad(options) {
         selected: 'record'
       });
     }
+    this,this.getUid();
+    this.getData();
   },
 
   /**
