@@ -1,18 +1,37 @@
 // pages/add-record/add-record.js
 Page({
   data: {
-    // 监管者数据
-    killerPlayer: '',
-    killerRole: '',
-    killerTalent1: '',
-    killerTalent2: '',
-    // 求生者数据（现在是4个）
-    survivors: [
-      { player: '', role: '', result: '', talent1: '', talent2: '' },
-      { player: '', role: '', result: '', talent1: '', talent2: '' },
-      { player: '', role: '', result: '', talent1: '', talent2: '' },
-      { player: '', role: '', result: '', talent1: '', talent2: '' } // 新增求生者4
-    ],
+    KillerPlayer: '', // 选中的监管者玩家
+    KillerRole: '', // 监管者角色
+    KillerTalent1: '', // 监管者天赋1
+    KillerTalent2: '', // 监管者天赋2
+    survivors: [ // 4个求生者完整信息
+        { player: '', role: '', talent1: '', talent2: '', result: '' },
+        { player: '', role: '', talent1: '', talent2: '', result: '' },
+        { player: '', role: '', talent1: '', talent2: '', result: '' },
+        { player: '', role: '', talent1: '', talent2: '', result: '' }
+      ],
+    // 新增战绩核心数据（和选择器绑定）
+    addKillerPlayer: '', // 选中的监管者玩家
+    addKillerRole: '', // 监管者角色
+    addKillerTalent1: '', // 监管者天赋1
+    addKillerTalent2: '', // 监管者天赋2
+    addSurvivorList: [ // 4个求生者完整信息
+        { player: '', role: '', talent1: '', talent2: '', result: '' },
+        { player: '', role: '', talent1: '', talent2: '', result: '' },
+        { player: '', role: '', talent1: '', talent2: '', result: '' },
+        { player: '', role: '', talent1: '', talent2: '', result: '' }
+      ],
+  // 基础数据源（和你现有代码共用）
+  hunterRoles: [], // 监管者列表（Hunter）
+    survivorRoles: [], // 求生者列表（Survivor）
+  users:[],
+  allUsers: [], // 所有玩家列表
+  allRoles: [], // 所有角色列表（监管者+求生者）
+  killerTalents: [], // 监管者天赋列表（Hunter）
+    survivorTalents: [], // 求生者天赋列表
+  allTalents: [], // 所有天赋列表
+  uitCache: [], // 你原有缓存
     // 选择器数据
     showBottomPicker: false,
     pickerValue: [0],
@@ -26,13 +45,66 @@ Page({
   goBack() {
     wx.navigateBack({ delta: 1 });
   },
-
+  loadAddBaseData() {
+    const app = getApp();
+    const baseUrl = app.globalData.baseUrl;
+  
+    // 加载所有玩家
+    wx.request({
+      url: `${baseUrl}/users`,
+      method: 'GET',
+      success: (res) => {
+        this.setData({ allUsers: res.data || [] });
+        const users=this.data.allUsers.map(item => item.username);
+        this.setData({
+          users
+        });
+      }
+    });
+  
+    // 加载所有角色（监管者+求生者）
+    wx.request({
+      url: `${baseUrl}/identities`,
+      method: 'GET',
+      success: (res) => {
+        wx.hideLoading();
+        this.setData({ allRoles: res.data });
+        // 按阵营筛选监管者/求生者
+        const killerRoles = res.data.filter(item => item.camp === 'Hunter').map(item => item.career);
+        const survivorRoles = res.data.filter(item => item.camp === 'Survivor').map(item => item.career);
+        this.setData({
+          killerRoles,
+          survivorRoles
+        });
+        resolve();
+      }
+    });
+  
+    // 加载所有天赋
+    wx.request({
+      url: `${baseUrl}/talents`,
+      method: 'GET',
+      success: (res) => {
+        const validTalents = res.data.filter(item => item.name && item.camp);
+          // 按阵营筛选：Hunter=监管者天赋，Survivor=求生者天赋
+          this.setData({ allTalents: res.data });
+          const killerTalents = validTalents.filter(item => item.camp === 'Hunter').map(item => item.name);
+          const survivorTalents = validTalents.filter(item => item.camp === 'Survivor').map(item => item.name);
+          
+          this.setData({
+            killerTalents,
+            survivorTalents,
+          });
+      }
+    });
+  },
   // ========== 选择器逻辑 ==========
   onSelectKillerPlayer() {
+    
     this.setData({
       showBottomPicker: true,
       pickerType: 'killerPlayer',
-      pickerOptions: ['玩家1', '玩家2', 'MRC-XiaoD', 'MRC-HuaC', 'MRC-Nanako', 'MRC-XiaoX'],
+      pickerOptions: this.data.users,
       pickerValue: [0]
     });
   },
@@ -40,7 +112,7 @@ Page({
     this.setData({
       showBottomPicker: true,
       pickerType: 'killerRole',
-      pickerOptions: ['摄影师', '梦之女巫', '宿伞之魂', '红夫人', '红蝶'],
+      pickerOptions: this.data.killerRoles,
       pickerValue: [0]
     });
   },
@@ -48,7 +120,7 @@ Page({
     this.setData({
       showBottomPicker: true,
       pickerType: 'killerTalent1',
-      pickerOptions: ['挽留', '禁闭空间', '狂暴', '困兽之斗'],
+      pickerOptions: this.data.killerTalents,
       pickerValue: [0]
     });
   },
@@ -56,7 +128,7 @@ Page({
     this.setData({
       showBottomPicker: true,
       pickerType: 'killerTalent2',
-      pickerOptions: ['挽留', '禁闭空间', '狂暴', '困兽之斗'],
+      pickerOptions: this.data.killerTalents,
       pickerValue: [0]
     });
   },
@@ -66,7 +138,7 @@ Page({
       showBottomPicker: true,
       pickerType: 'survivorPlayer',
       pickerIndex: index,
-      pickerOptions: ['MRC-XiaoD', 'MRC-HuaC', 'MRC-Nanako', 'MRC-XiaoX', '路人A', '路人B'],
+      pickerOptions: this.data.users,
       pickerValue: [0]
     });
   },
@@ -86,7 +158,7 @@ Page({
       showBottomPicker: true,
       pickerType: 'survivorRole',
       pickerIndex: index,
-      pickerOptions: ['古董商', '心理学家', '啦啦队员', '杂技演员', '调香师'],
+      pickerOptions: this.data.survivorRoles,
       pickerValue: [0]
     });
   },
@@ -97,7 +169,7 @@ Page({
       pickerType: 'survivorTalent1',
       pickerIndex: index,
       pickerTalentIndex: 1,
-      pickerOptions: ['飞轮效应', '化险为夷', '膝跳反射', '回光返照'],
+      pickerOptions: this.data.survivorTalents,
       pickerValue: [0]
     });
   },
@@ -108,7 +180,7 @@ Page({
       pickerType: 'survivorTalent2',
       pickerIndex: index,
       pickerTalentIndex: 2,
-      pickerOptions: ['飞轮效应', '化险为夷', '膝跳反射', '回光返照'],
+      pickerOptions: this.data.survivorTalents,
       pickerValue: [0]
     });
   },
@@ -126,7 +198,14 @@ Page({
     let newKillerRole = this.data.killerRole;
     let newKillerTalent1 = this.data.killerTalent1;
     let newKillerTalent2 = this.data.killerTalent2;
-    let newSurvivors = JSON.parse(JSON.stringify(this.data.survivors));
+    let newSurvivors = Array.isArray(this.data.survivors) 
+    ? JSON.parse(JSON.stringify(this.data.survivors)) // 深拷贝（有数据时）
+    : [ // 无数据时初始化默认结构（4个求生者）
+        { player: '', role: '', result: '', talent1: '', talent2: '' },
+        { player: '', role: '', result: '', talent1: '', talent2: '' },
+        { player: '', role: '', result: '', talent1: '', talent2: '' },
+        { player: '', role: '', result: '', talent1: '', talent2: '' }
+      ];
 
     switch (pickerType) {
       case 'killerPlayer':
@@ -164,86 +243,208 @@ Page({
       killerTalent1: newKillerTalent1,
       killerTalent2: newKillerTalent2,
       survivors: newSurvivors,
+      addKillerPlayer: newKillerPlayer,
+      addKillerRole: newKillerRole,
+      addKillerTalent1: newKillerTalent1,
+      addKillerTalent2: newKillerTalent2,
+      addSurvivorList: newSurvivors,
       showBottomPicker: false
     });
+    console.log(this.data.addKillerPlayer);
+    console.log(this.data.addKillerRole);
   },
-
+  
   // ========== 提交逻辑（已适配4个求生者） ==========
   onSubmit() {
-    const { killerPlayer, killerRole, killerTalent1, killerTalent2, survivors } = this.data;
+    const app = getApp();
+    const baseUrl = app.globalData.baseUrl;
+    const {
+      addKillerPlayer, addKillerRole, addKillerTalent1, addKillerTalent2,
+      addSurvivorList, allUsers, allRoles, allTalents
+    } = this.data;
 
-    // 校验必填项（包含4个求生者）
-    if (!killerPlayer || !killerRole || !killerTalent1 || !killerTalent2) {
+    console.log('===== 监管者信息校验 =====');
+    // 1. 基础校验
+    if (!addKillerPlayer || !addKillerRole) {
       wx.showToast({ title: '请完善监管者信息', icon: 'none' });
       return;
     }
-    for (let i = 0; i < survivors.length; i++) {
-      const s = survivors[i];
-      if (!s.player || !s.role || !s.result || !s.talent1 || !s.talent2) {
-        wx.showToast({ title: `请完善求生者${i+1}信息`, icon: 'none' });
+    for (let i = 0; i < addSurvivorList.length; i++) {
+      const survivor = addSurvivorList[i];
+      if (!survivor.player || !survivor.role || !survivor.result) {
+        wx.showToast({ title: `请完善第${i+1}名求生者信息`, icon: 'none' });
         return;
       }
     }
-
-    // 统计逃脱人数，计算监管者结果
-    let escapeCount = 0;
-    survivors.forEach(s => {
-      if (s.result === '逃脱') escapeCount++;
-    });
-    let killerResult = '';
-    if (escapeCount === 0) killerResult = '胜利';
-    else if (escapeCount === 2) killerResult = '勉强胜利';
-    else if (escapeCount > 2) killerResult = '一败涂地';
-    else killerResult = '胜利';
-
-    // 组装战绩数据（包含4个求生者）
-    const newRecord = {
-      role: killerRole,
-      result: killerResult,
-      type: escapeCount <= 2 ? 'win' : 'lose',
-      expanded: false,
-      details: [
-        {
-          role: `监管者：${killerRole} (1)\n携带天赋：${killerTalent1}、${killerTalent2}`,
-          tag: escapeCount === 0 ? '大获全胜' : (escapeCount === 2 ? '勉强胜利' : '一败涂地'),
-          pureRole: `监管者：${killerRole} (1)`,
-          talent: `${killerTalent1}、${killerTalent2}`,
-          isKiller: true,
-          isWin: escapeCount <= 2
-        },
-        ...survivors.map((s, i) => ({
-          role: `求生者：${s.role}（${s.player}）\n携带天赋：${s.talent1}、${s.talent2}`,
-          tag: s.result,
-          pureRole: `求生者：${s.role}（${s.player}）`,
-          talent: `${s.talent1}、${s.talent2}`,
-          isKiller: false,
-          isWin: s.result === '逃脱'
-        }))
-      ]
+    console.log('✅ 基础校验通过');
+    console.log('开始名称→ID映射：');
+    // 2. 名称→ID映射（从原始数据中查找对应ID）
+    // 玩家名称 → user_id
+    const getUserID = (username) => {
+      const user = allUsers.find(item => item.username === username);
+      return user ? user.user_id : 0;
+    };
+    // 角色名称 → identity_id
+    const getIdentityID = (career, camp) => {
+      const role = allRoles.find(item => item.career === career && item.camp === camp);
+      return role ? role.identity_id : 0;
+    };
+    // 天赋名称 → talent_id
+    const getTalentID = (name, camp) => {
+      const talent = allTalents.find(item => item.name === name && item.camp === camp);
+      return talent ? talent.talent_id : 0;
     };
 
-    // 保存到本地存储
-    const oldRecords = wx.getStorageSync('ivs_records') || [];
-    const newRecords = [newRecord, ...oldRecords];
-    wx.setStorageSync('ivs_records', newRecords);
+    // 3. 构造5个U_I_T参数（1监管者+4求生者）
+    const uitParamsList = [
+      // 监管者U_I_T参数
+      {
+        user_id: getUserID(addKillerPlayer),
+        identity_id: getIdentityID(addKillerRole, 'Hunter'),
+        talent1_id: getTalentID(addKillerTalent1, 'Hunter'),
+        talent2_id: getTalentID(addKillerTalent2, 'Hunter')
+      },
+      // 求生者1
+      {
+        user_id: getUserID(addSurvivorList[0].player),
+        identity_id: getIdentityID(addSurvivorList[0].role, 'Survivor'),
+        talent1_id: getTalentID(addSurvivorList[0].talent1, 'Survivor'),
+        talent2_id: getTalentID(addSurvivorList[0].talent2, 'Survivor')
+      },
+      // 求生者2
+      {
+        user_id: getUserID(addSurvivorList[1].player),
+        identity_id: getIdentityID(addSurvivorList[1].role, 'Survivor'),
+        talent1_id: getTalentID(addSurvivorList[1].talent1, 'Survivor'),
+        talent2_id: getTalentID(addSurvivorList[1].talent2, 'Survivor')
+      },
+      // 求生者3
+      {
+        user_id: getUserID(addSurvivorList[2].player),
+        identity_id: getIdentityID(addSurvivorList[2].role, 'Survivor'),
+        talent1_id: getTalentID(addSurvivorList[2].talent1, 'Survivor'),
+        talent2_id: getTalentID(addSurvivorList[2].talent2, 'Survivor')
+      },
+      // 求生者4
+      {
+        user_id: getUserID(addSurvivorList[3].player),
+        identity_id: getIdentityID(addSurvivorList[3].role, 'Survivor'),
+        talent1_id: getTalentID(addSurvivorList[3].talent1, 'Survivor'),
+        talent2_id: getTalentID(addSurvivorList[3].talent2, 'Survivor')
+      }
+    ];
 
-    // 提示成功并返回
-    wx.showToast({
-      title: '添加战绩成功！',
-      icon: 'success',
-      duration: 1500
-    });
+    // 4. 校验ID有效性
+    for (let i = 0; i < uitParamsList.length; i++) {
+      const params = uitParamsList[i];
+      if (params.user_id === 0 || params.identity_id === 0) {
+        const type = i === 0 ? '监管者' : `第${i}名求生者`;
+        wx.showToast({ title: `${type}信息匹配失败，请检查数据`, icon: 'none' });
+        return;
+      }
+    }
+    console.log('✅ ID映射校验通过');
 
-    setTimeout(() => {
-      wx.navigateBack();
-    }, 1500);
+    wx.showLoading({ title: '提交中...' });
+
+    // 5. 批量创建U_I_T
+    const createUITList = async () => {
+      const uitIdList = [];
+      for (let i = 0; i < uitParamsList.length; i++) {
+        const params = uitParamsList[i];
+        const uitId = await new Promise((resolve, reject) => {
+          wx.request({
+            url: `${baseUrl}/uits`, // 你的createUIT接口
+            method: 'POST',
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            data: params,
+            success: (res) => {
+              if (res.statusCode === 201 && res.data) {
+                resolve(res.data);
+              } else {
+                reject(`创建${i===0?'监管者':'第'+i+'名求生者'}U_I_T失败`);
+              }
+            },
+            fail: (err) => {
+              reject(`接口调用失败：${err.errMsg}`);
+            }
+          });
+        });
+        uitIdList.push(uitId);
+      }
+      return uitIdList;
+    };
+
+    // 6. 执行创建流程
+    createUITList()
+      .then((uitIdList) => {
+        // 构造createGame参数
+        const gameParams = {
+          hunter_id: uitIdList[0],
+          survivor1_id: uitIdList[1],
+          survivor2_id: uitIdList[2],
+          survivor3_id: uitIdList[3],
+          survivor4_id: uitIdList[4],
+          result1: addSurvivorList[0].result === '逃脱',
+          result2: addSurvivorList[1].result === '逃脱',
+          result3: addSurvivorList[2].result === '逃脱',
+          result4: addSurvivorList[3].result === '逃脱'
+        };
+
+        // 调用createGame接口
+        return new Promise((resolve, reject) => {
+          wx.request({
+            url: `${baseUrl}/games`, // 你的createGame接口
+            method: 'POST',
+            header: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            data: gameParams,
+            success: (res) => {
+              if (res.statusCode === 201 && res.data) {
+                resolve(res.data);
+              } else {
+                reject('创建战绩失败');
+              }
+            },
+            fail: (err) => {
+              reject(`战绩接口调用失败：${err.errMsg}`);
+            }
+          });
+        });
+      })
+      .then((gameId) => {
+        // 成功处理
+        wx.hideLoading();
+        wx.showToast({ title: '新增战绩成功', icon: 'success' });
+        //重置数据
+        this.setData({
+          addKillerPlayer: '',
+          addKillerRole: '',
+          addKillerTalent1: '',
+          addKillerTalent2: '',
+          addSurvivorList: [
+            { player: '', role: '', talent1: '', talent2: '', result: '' },
+            { player: '', role: '', talent1: '', talent2: '', result: '' },
+            { player: '', role: '', talent1: '', talent2: '', result: '' },
+            { player: '', role: '', talent1: '', talent2: '', result: '' }
+          ]
+        });
+        // 可在此处添加刷新战绩列表的逻辑
+        // this.loadRecords();
+        this.goBack();
+      })
+      .catch((errMsg) => {
+        // 失败处理
+        wx.hideLoading();
+        wx.showToast({ title: errMsg || '新增失败，请重试', icon: 'none' });
+        console.error('新增失败原因：', errMsg);
+      });
   },
   
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    this.loadAddBaseData()
   },
 
   /**
