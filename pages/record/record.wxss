@@ -455,3 +455,6 @@ page {
   font-size: 28rpx;
   color: #9C27B0;
 }
+.tip{
+  text-align: center;
+}

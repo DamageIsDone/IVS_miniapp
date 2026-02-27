@@ -8,8 +8,8 @@ Page({
     userId:null,
     message:"",
     originRecords:[],
-    hunter:null,// 最常用监管者
-    survivor: null ,// 最常用求生者
+    hunter:{ career: "暂无" },// 最常用监管者
+    survivor: { career: "暂无" },// 最常用求生者
     hunterRoles: [], // 监管者列表（Hunter）
     survivorRoles: [], // 求生者列表（Survivor）
     allRoles: [] ,
@@ -18,43 +18,59 @@ Page({
     survivorTalents: [], // 求生者天赋列表（Survivor）
     allTalents: [] ,// 保存完整天赋数据，用于匹配ID
     uitCache:[],
-    records: [
-      {
-        role: "摄影师",
-        result: "胜利",
-        type: "win",
-        expanded: true,
-        details: [
-          // 监管者补充天赋：挽留、禁闭空间
-          { role: "监管者：摄影师 (1)\n携带天赋：挽留、禁闭空间", tag: "大获全胜", pureRole: "监管者：摄影师 (1)", talent: "挽留、禁闭空间" ,isKiller: true, },
-          { role: "求生者：古董商（MRC-XiaoD）\n携带天赋：飞轮效应、膝跳反射", tag: "迷失", pureRole: "求生者：古董商（MRC-XiaoD）", talent: "飞轮效应、膝跳反射" },
-          { role: "求生者：心理学家（MRC-HuaC）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：心理学家（MRC-HuaC）", talent: "飞轮效应、化险为夷" },
-          { role: "求生者：啦啦队员（MRC-Nanako）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：啦啦队员（MRC-Nanako）", talent: "飞轮效应、化险为夷" },
-          { role: "求生者：杂技演员（MRC-XiaoX）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：杂技演员（MRC-XiaoX）", talent: "飞轮效应、化险为夷" }
-        ]
-      },
-      {
-        role: "摄影师",
-        result: "平局",
-        type: "draw",
-        expanded: false,
-        details: []
-      },
-      {
-        role: "梦之女巫",
-        result: "失败",
-        type: "lose",
-        expanded: false,
-        details: [
-          // 监管者补充天赋：狂暴、困兽之斗
-          { role: "监管者：梦之女巫 (1)\n携带天赋：狂暴、困兽之斗", tag: "一败涂地", pureRole: "监管者：梦之女巫 (1)", talent: "狂暴、困兽之斗" },
-          { role: "求生者：调香师\n携带天赋：飞轮效应、回光返照", tag: "逃脱", pureRole: "求生者：调香师", talent: "飞轮效应、回光返照" },
-          { role: "求生者：机械师\n携带天赋：飞轮效应、回光返照", tag: "逃脱", pureRole: "求生者：机械师", talent: "飞轮效应、回光返照" },
-          { role: "求生者：佣兵\n携带天赋：化险为夷、回光返照", tag: "逃脱", pureRole: "求生者：佣兵", talent: "化险为夷、回光返照" },
-          { role: "求生者：先知\n携带天赋：飞轮效应、回光返照", tag: "迷失", pureRole: "求生者：先知", talent: "飞轮效应、回光返照" }
-        ]
-      }
-    ],
+
+    hunterStats: { // 监管者胜率统计
+      winCount: 0,
+      totalCount: 0,
+      winRate: "0.00%",
+      winRateNum: 0
+    },
+    survivorStats: { // 求生者胜率统计
+      winCount: 0,
+      totalCount: 0,
+      winRate: "0.00%",
+      winRateNum: 0
+    },
+    gameList: [], // 历史对局列表
+    isLoading: true,
+    records:[],
+    // records: [
+    //   {
+    //     role: "摄影师",
+    //     result: "胜利",
+    //     type: "win",
+    //     expanded: true,
+    //     details: [
+    //       // 监管者补充天赋：挽留、禁闭空间
+    //       { role: "监管者：摄影师 (1)\n携带天赋：挽留、禁闭空间", tag: "大获全胜", pureRole: "监管者：摄影师 (1)", talent: "挽留、禁闭空间" ,isKiller: true, },
+    //       { role: "求生者：古董商（MRC-XiaoD）\n携带天赋：飞轮效应、膝跳反射", tag: "迷失", pureRole: "求生者：古董商（MRC-XiaoD）", talent: "飞轮效应、膝跳反射" },
+    //       { role: "求生者：心理学家（MRC-HuaC）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：心理学家（MRC-HuaC）", talent: "飞轮效应、化险为夷" },
+    //       { role: "求生者：啦啦队员（MRC-Nanako）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：啦啦队员（MRC-Nanako）", talent: "飞轮效应、化险为夷" },
+    //       { role: "求生者：杂技演员（MRC-XiaoX）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：杂技演员（MRC-XiaoX）", talent: "飞轮效应、化险为夷" }
+    //     ]
+    //   },
+    //   {
+    //     role: "摄影师",
+    //     result: "平局",
+    //     type: "draw",
+    //     expanded: false,
+    //     details: []
+    //   },
+    //   {
+    //     role: "梦之女巫",
+    //     result: "失败",
+    //     type: "lose",
+    //     expanded: false,
+    //     details: [
+    //       // 监管者补充天赋：狂暴、困兽之斗
+    //       { role: "监管者：梦之女巫 (1)\n携带天赋：狂暴、困兽之斗", tag: "一败涂地", pureRole: "监管者：梦之女巫 (1)", talent: "狂暴、困兽之斗" },
+    //       { role: "求生者：调香师\n携带天赋：飞轮效应、回光返照", tag: "逃脱", pureRole: "求生者：调香师", talent: "飞轮效应、回光返照" },
+    //       { role: "求生者：机械师\n携带天赋：飞轮效应、回光返照", tag: "逃脱", pureRole: "求生者：机械师", talent: "飞轮效应、回光返照" },
+    //       { role: "求生者：佣兵\n携带天赋：化险为夷、回光返照", tag: "逃脱", pureRole: "求生者：佣兵", talent: "化险为夷、回光返照" },
+    //       { role: "求生者：先知\n携带天赋：飞轮效应、回光返照", tag: "迷失", pureRole: "求生者：先知", talent: "飞轮效应、回光返照" }
+    //     ]
+    //   }
+    // ],
     currentUserId: 1, // 当前登录用户ID（替换为实际用户ID）
     showEditModal: false,
     currentIndex: -1,
@@ -76,7 +92,7 @@ Page({
   },
 
   getData() {
-    const userId = this.data.UserId ||1;
+    const userId = this.data.UserId ;
     const baseUrl = app.globalData.baseUrl;
     wx.request({
     url: `${baseUrl}/uits`, // 后端查询所有U_I_T的接口
@@ -102,7 +118,7 @@ Page({
             killerTalents,
             survivorTalents,
           });
-          resolve();
+          // resolve();
       },
       fail: (err) => reject(err)
     });
@@ -119,7 +135,6 @@ Page({
           killerRoles,
           survivorRoles
         });
-        resolve();
       },
       fail: (err) => {
         wx.hideLoading();
@@ -163,10 +178,11 @@ Page({
         console.log(err);
       },
     });
+    
     //发起网络请求获取数据
     wx.request({
       //请求接口地址
-      url: `${baseUrl}/games/user?user_id=1`,
+      url: `${baseUrl}/games/user?user_id=${userId}`,
       //请求方式
       method: 'GET',
       //请求参数
@@ -183,6 +199,83 @@ Page({
           });
           const frontRecords = this.convertBackendDataToFront(res.data);
           this.setData({ records: frontRecords });
+
+
+
+          const gameList = res.data;
+          // 初始化统计数据
+          let hunterWin = 0, hunterTotal = 0;
+          let survivorWin = 0, survivorTotal = 0;
+
+          // 遍历对局，统计胜率+格式化对局数据
+          const formatGameList = gameList.map(game => {
+            // 判断当前用户在该局的身份
+            const isHunter = game.hunter 
+              && game.hunter.user 
+              && game.hunter.user.user_id == userId;
+            const isSurvivor = 
+              (game.survivor1 && game.survivor1.user && game.survivor1.user.user_id == userId) ||
+              (game.survivor2 && game.survivor2.user && game.survivor2.user.user_id == userId) ||
+              (game.survivor3 && game.survivor3.user && game.survivor3.user.user_id == userId) ||
+              (game.survivor4 && game.survivor4.user && game.survivor4.user.user_id == userId);
+
+            // 计算该局胜负（逃脱≥2人算求生者胜）
+            const escapeCount = [game.result1, game.result2, game.result3, game.result4].filter(Boolean).length;
+            const isSurvivorWin = escapeCount >= 2;
+            const isHunterWin = !isSurvivorWin;
+
+            // 统计监管者数据
+            if (isHunter) {
+              hunterTotal += 1;
+              if (isHunterWin) hunterWin += 1;
+              game.userIdentity = "监管者";
+              game.userResult = isHunterWin ? "胜利" : "失败";
+            }
+            // 统计求生者数据
+            if (isSurvivor) {
+              survivorTotal += 1;
+              if (isSurvivorWin) survivorWin += 1;
+              game.userIdentity = "求生者";
+              game.userResult = isSurvivorWin ? "胜利" : "失败";
+            }
+
+            // 格式化对局展示信息
+            game.escapeCount = escapeCount;
+            game.hunterName = game.hunter?.user?.username || "未知监管者";
+            game.survivorNames = [
+              game.survivor1?.user?.username,
+              game.survivor2?.user?.username,
+              game.survivor3?.user?.username,
+              game.survivor4?.user?.username
+            ].filter(Boolean).join("、");
+
+            return game;
+          });
+
+          // 计算胜率（保留2位小数）
+          const hunterRate = hunterTotal === 0 
+            ? 0 
+            : Math.round((hunterWin / hunterTotal) * 10000) / 100;
+          const survivorRate = survivorTotal === 0 
+            ? 0 
+            : Math.round((survivorWin / survivorTotal) * 10000) / 100;
+
+          // 更新数据
+          this.setData({
+            gameList: formatGameList,
+            hunterStats: {
+              winCount: hunterWin,
+              totalCount: hunterTotal,
+              winRate: `${hunterRate.toFixed(2)}%`,
+              winRateNum: hunterRate
+            },
+            survivorStats: {
+              winCount: survivorWin,
+              totalCount: survivorTotal,
+              winRate: `${survivorRate.toFixed(2)}%`,
+              winRateNum: survivorRate
+            }
+          });
         }
       },
       //失败后,执行回调
@@ -1266,6 +1359,7 @@ onLoad(options) {
       userId: userId,
       message: userId ? `当前 UID: ${userId}` : '未绑定账号，请先到首页绑定'
     });
+    console.log(this.data.message);
   },
   /**
    * 生命周期函数--监听页面加载
