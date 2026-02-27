@@ -33,44 +33,44 @@ Page({
     },
     gameList: [], // 历史对局列表
     isLoading: true,
-
-    records: [
-      {
-        role: "摄影师",
-        result: "胜利",
-        type: "win",
-        expanded: true,
-        details: [
-          // 监管者补充天赋：挽留、禁闭空间
-          { role: "监管者：摄影师 (1)\n携带天赋：挽留、禁闭空间", tag: "大获全胜", pureRole: "监管者：摄影师 (1)", talent: "挽留、禁闭空间" ,isKiller: true, },
-          { role: "求生者：古董商（MRC-XiaoD）\n携带天赋：飞轮效应、膝跳反射", tag: "迷失", pureRole: "求生者：古董商（MRC-XiaoD）", talent: "飞轮效应、膝跳反射" },
-          { role: "求生者：心理学家（MRC-HuaC）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：心理学家（MRC-HuaC）", talent: "飞轮效应、化险为夷" },
-          { role: "求生者：啦啦队员（MRC-Nanako）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：啦啦队员（MRC-Nanako）", talent: "飞轮效应、化险为夷" },
-          { role: "求生者：杂技演员（MRC-XiaoX）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：杂技演员（MRC-XiaoX）", talent: "飞轮效应、化险为夷" }
-        ]
-      },
-      {
-        role: "摄影师",
-        result: "平局",
-        type: "draw",
-        expanded: false,
-        details: []
-      },
-      {
-        role: "梦之女巫",
-        result: "失败",
-        type: "lose",
-        expanded: false,
-        details: [
-          // 监管者补充天赋：狂暴、困兽之斗
-          { role: "监管者：梦之女巫 (1)\n携带天赋：狂暴、困兽之斗", tag: "一败涂地", pureRole: "监管者：梦之女巫 (1)", talent: "狂暴、困兽之斗" },
-          { role: "求生者：调香师\n携带天赋：飞轮效应、回光返照", tag: "逃脱", pureRole: "求生者：调香师", talent: "飞轮效应、回光返照" },
-          { role: "求生者：机械师\n携带天赋：飞轮效应、回光返照", tag: "逃脱", pureRole: "求生者：机械师", talent: "飞轮效应、回光返照" },
-          { role: "求生者：佣兵\n携带天赋：化险为夷、回光返照", tag: "逃脱", pureRole: "求生者：佣兵", talent: "化险为夷、回光返照" },
-          { role: "求生者：先知\n携带天赋：飞轮效应、回光返照", tag: "迷失", pureRole: "求生者：先知", talent: "飞轮效应、回光返照" }
-        ]
-      }
-    ],
+    records:[],
+    // records: [
+    //   {
+    //     role: "摄影师",
+    //     result: "胜利",
+    //     type: "win",
+    //     expanded: true,
+    //     details: [
+    //       // 监管者补充天赋：挽留、禁闭空间
+    //       { role: "监管者：摄影师 (1)\n携带天赋：挽留、禁闭空间", tag: "大获全胜", pureRole: "监管者：摄影师 (1)", talent: "挽留、禁闭空间" ,isKiller: true, },
+    //       { role: "求生者：古董商（MRC-XiaoD）\n携带天赋：飞轮效应、膝跳反射", tag: "迷失", pureRole: "求生者：古董商（MRC-XiaoD）", talent: "飞轮效应、膝跳反射" },
+    //       { role: "求生者：心理学家（MRC-HuaC）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：心理学家（MRC-HuaC）", talent: "飞轮效应、化险为夷" },
+    //       { role: "求生者：啦啦队员（MRC-Nanako）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：啦啦队员（MRC-Nanako）", talent: "飞轮效应、化险为夷" },
+    //       { role: "求生者：杂技演员（MRC-XiaoX）\n携带天赋：飞轮效应、化险为夷", tag: "迷失", pureRole: "求生者：杂技演员（MRC-XiaoX）", talent: "飞轮效应、化险为夷" }
+    //     ]
+    //   },
+    //   {
+    //     role: "摄影师",
+    //     result: "平局",
+    //     type: "draw",
+    //     expanded: false,
+    //     details: []
+    //   },
+    //   {
+    //     role: "梦之女巫",
+    //     result: "失败",
+    //     type: "lose",
+    //     expanded: false,
+    //     details: [
+    //       // 监管者补充天赋：狂暴、困兽之斗
+    //       { role: "监管者：梦之女巫 (1)\n携带天赋：狂暴、困兽之斗", tag: "一败涂地", pureRole: "监管者：梦之女巫 (1)", talent: "狂暴、困兽之斗" },
+    //       { role: "求生者：调香师\n携带天赋：飞轮效应、回光返照", tag: "逃脱", pureRole: "求生者：调香师", talent: "飞轮效应、回光返照" },
+    //       { role: "求生者：机械师\n携带天赋：飞轮效应、回光返照", tag: "逃脱", pureRole: "求生者：机械师", talent: "飞轮效应、回光返照" },
+    //       { role: "求生者：佣兵\n携带天赋：化险为夷、回光返照", tag: "逃脱", pureRole: "求生者：佣兵", talent: "化险为夷、回光返照" },
+    //       { role: "求生者：先知\n携带天赋：飞轮效应、回光返照", tag: "迷失", pureRole: "求生者：先知", talent: "飞轮效应、回光返照" }
+    //     ]
+    //   }
+    // ],
     currentUserId: 1, // 当前登录用户ID（替换为实际用户ID）
     showEditModal: false,
     currentIndex: -1,
@@ -92,7 +92,7 @@ Page({
   },
 
   getData() {
-    const userId = this.data.UserId ||1;
+    const userId = this.data.UserId ;
     const baseUrl = app.globalData.baseUrl;
     wx.request({
     url: `${baseUrl}/uits`, // 后端查询所有U_I_T的接口
@@ -182,7 +182,7 @@ Page({
     //发起网络请求获取数据
     wx.request({
       //请求接口地址
-      url: `${baseUrl}/games/user?user_id=1`,
+      url: `${baseUrl}/games/user?user_id=${userId}`,
       //请求方式
       method: 'GET',
       //请求参数
@@ -1359,6 +1359,7 @@ onLoad(options) {
       userId: userId,
       message: userId ? `当前 UID: ${userId}` : '未绑定账号，请先到首页绑定'
     });
+    console.log(this.data.message);
   },
   /**
    * 生命周期函数--监听页面加载

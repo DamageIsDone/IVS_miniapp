@@ -37,7 +37,10 @@
 
   <!-- 可滑动的战绩列表（留出顶部固定区域的间距） -->
   <scroll-view class="record-list-container" scroll-y="true">
-    <view class="tip" wx:if="{{!records.length}}">
+    <view class="tip" wx:if="{{!userId}}">
+      当前没有绑定账号
+    </view>
+    <view class="tip" wx:if="{{!records.length&&userId}}">
     暂无历史战绩
     </view>
     <view class="record-list">
