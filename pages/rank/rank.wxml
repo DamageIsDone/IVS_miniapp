@@ -1,4 +1,3 @@
-<!-- 使用自定义navigation-bar -->
 <navigation-bar title="排行榜" background="#6C5CE7" color="#fff" />
 
 <view class="rank-container">
@@ -12,7 +11,7 @@
     </view>
   </view>
 
-  <!-- 空数据提示（可选，避免列表为空时空白） -->
+  <!-- 空数据提示-->
   <view class="empty-tip" wx:if="{{!rankList.length}}">
     暂无{{currentTab === 0 ? '监管者' : '求生者'}}胜率数据
   </view>
@@ -20,11 +19,8 @@
   <!-- 排行榜列表 -->
   <view class="rank-list" wx:else>
     <view class="rank-item" wx:for="{{rankList}}" wx:key="userId">
-      <!-- 排名 -->
       <view class="rank-num">{{item.rank}}</view>
-      <!-- 用户名（对应JS里的userName） -->
       <view class="rank-name">{{item.userName}}</view>
-      <!-- 胜率（对应JS里的winRateText，包含胜场/总场） -->
       <view class="rank-rate">
         {{item.winRateText}} ({{item.winCount}}胜/{{item.totalCount}}场)
       </view>

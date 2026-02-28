@@ -1,8 +1,6 @@
 <!--pages/record/record.wxml-->
 <view class="container">
-  <!-- 固定顶部的导航栏 + 历史战绩 + 数据卡片 -->
   <view class="fixed-header">
-    <!-- 仅展示标题的 navigation-bar 组件 -->
     <navigation-bar title="Identity V"></navigation-bar>
 
     <!-- 独立的历史战绩栏 -->
@@ -35,7 +33,7 @@
     </view>
   </view>
 
-  <!-- 可滑动的战绩列表（留出顶部固定区域的间距） -->
+  <!-- 可滑动的战绩列表 -->
   <scroll-view class="record-list-container" scroll-y="true">
     <view class="tip" wx:if="{{!userId}}">
       当前没有绑定账号
@@ -78,7 +76,7 @@
     </view>
   </scroll-view>
 
-  <!-- 新增：自定义修改弹窗（默认隐藏） -->
+  <!-- 自定义修改弹窗 -->
   <view class="edit-modal {{showEditModal ? 'show' : ''}}" wx:if="{{showEditModal}}">
     <view class="modal-content">
       <view class="modal-header">
@@ -100,7 +98,7 @@
         </view>
       </view>
 
-      <!-- 求生者部分（循环显示） -->
+      <!-- 求生者部分 -->
       <view class="modal-section" wx:for="{{editDetails}}" wx:key="index" wx:for-index="surIndex">
         <text class="section-label">求生者{{surIndex + 1}}：</text>
         <view class="tag-group">
@@ -120,7 +118,7 @@
       </view>
     </view>
   </view>
-<!-- 新增：角色天赋详情弹窗 -->
+<!-- 角色天赋详情弹窗 -->
 <view class="role-talent-modal {{showRoleTalentModal ? 'show' : ''}}" wx:if="{{showRoleTalentModal}}">
     <view class="modal-content">
       <view class="modal-header">
@@ -148,7 +146,7 @@
       </view>
     </view>
   </view>
-  <!-- 底部选择器（必须放在WXML最后，避免被遮挡） -->
+  <!-- 底部选择器 -->
   <view class="bottom-picker {{showBottomPicker ? 'show' : ''}}">
     <view class="picker-header">
       <text bindtap="closeBottomPicker">取消</text>
