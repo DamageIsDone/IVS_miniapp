@@ -82,12 +82,10 @@ Page({
     this.setData({ currentTab: tab });
   },
 
-  // 只记录输入，不搜索
   onSearchInput(e) {
     this.setData({ searchKeyword: e.detail.value });
   },
 
-  // 点按钮才搜索
   onSearchBtnClick() {
     const kw = this.data.searchKeyword?.trim();
     if (!kw) {

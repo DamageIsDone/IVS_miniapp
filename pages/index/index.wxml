@@ -2,7 +2,7 @@
 <navigation-bar title="Weixin" back="{{false}}" color="black" background="#FFF"></navigation-bar>
 <scroll-view class="scrollarea" scroll-y type="list">
 
-  <!-- 用户信息卡片（集成绑定/解绑按钮） -->
+  <!-- 用户信息 -->
   <view class="user-card">
     <view class="user-info" wx:if="{{hasUserInfo}}">
       <view class="avatar-wrapper">
@@ -26,7 +26,7 @@
     <button wx:if="{{!hasUserInfo}}" class="get-user-btn" bindtap="getUserProfile">获取微信头像昵称</button>
   </view>
 
-  <!-- 签到卡片（左侧累计天数，右侧签到按钮） -->
+  <!-- 签到 -->
   <view class="sign-card" >
     <view class="sign-left">
       <text class="sign-days">{{signTotalDays}}</text>
@@ -44,7 +44,7 @@
     </view>
   </view>
 
-  <!-- 三个功能入口 -->
+  <!-- 功能入口 -->
   <view class="feature-grid">
     <view class="feature-item" bindtap="gotoWiki">
       <image class="feature-icon" src="../../components/assets/icon/wiki.png" mode="aspectFill"></image>
@@ -60,7 +60,7 @@
     </view>
   </view>
 
-<!-- 抽签卡片（可反复点击换一个） -->
+<!-- 抽签 -->
 <view class="fortune-card">
   <text class="fortune-title">今日上上签</text>
   <text class="fortune-text">{{todayFortune.text}}</text>
@@ -86,7 +86,7 @@
     </view>
   </view>
 
- <!-- 详情弹窗 -->
+ <!-- 详情 -->
 <view class="popup" wx:if="{{showDetail}}" bindtap="hideDetailPopup" data-type="mask">
   <view class="popup-content detail-content" catchtap="stopPropagation">
     <view class="detail-header">

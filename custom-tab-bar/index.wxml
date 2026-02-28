@@ -1,16 +1,16 @@
-<!-- 根目录/custom-tab-bar/index.wxml -->
+<!-- custom-tab-bar/index.wxml -->
 <view class="tab-bar">
-  <!-- wiki项 -->
+  <!-- wiki -->
   <view class="tab-bar-item" bindtap="switchTab" data-path="/pages/wiki/wiki">
     <view class="text {{selected === 'wiki' ? 'selected' : ''}}">WIKI</view>
   </view>
 
-  <!-- 中间information按钮 -->
+  <!-- information -->
   <view class="tab-bar-information" bindtap="handleInformation">
     <view class="information-btn">i</view>
   </view>
 
-  <!-- record项 -->
+  <!-- record -->
   <view class="tab-bar-item" bindtap="switchTab" data-path="/pages/record/record">
     <view class="text {{selected === 'record' ? 'selected' : ''}}">RECORD</view>
   </view>
