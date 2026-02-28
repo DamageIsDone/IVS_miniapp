@@ -7,24 +7,20 @@ Page({
     hasUserInfo: false,      // 是否已获取微信用户信息
     userInfo: {},            // 微信用户信息（头像、昵称）
     bound: false,            // 绑定状态
-    boundPhone: '',          // 已绑定的手机号（作为游戏名展示）
-    userId: null,            // 游戏ID（user_id）
+    boundPhone: '',          // 绑定游戏名
+    userId: null,            // 游戏ID
     openid: '',              // 微信openid
     showPopup: false,        // 控制绑定弹窗显示
     phone: '',               // 输入的手机号
     password: '',            // 输入的密码
-    result: '',              // 测试结果显示
-
-    // 新增数据
     signTotalDays: 0,          // 累计签到天数
     signedToday: false,        // 今日是否已签到
     signLoading: false,        // 签到按钮加载状态
     showDetail: false,         // 控制详情弹窗显示
-    
     todayFortune: { text: '' }, // 今日签文
   },
 
-  // 抽签签文数组
+ 
   fortunes: [
     { text: '伊塔库亚远袭观鸟中！' },
     { text: '格蕾丝在想鱼儿为什么不会说话...' },
@@ -37,13 +33,12 @@ Page({
   ],
 
   onLoad(options) {
-    // 尝试从本地存储恢复用户信息（如已登录过）
     const storedUserId = wx.getStorageSync('userId');
     const storedBoundPhone = wx.getStorageSync('boundPhone');
     const storedOpenid = wx.getStorageSync('openid');
     const storedUserInfo = wx.getStorageSync('userInfo');
     if (storedUserId) {
-      // 有存储的userId，认为已绑定
+      // 已绑定
       this.setData({
         bound: true,
         userId: storedUserId,
@@ -55,15 +50,12 @@ Page({
       // 获取签到状态
       this.fetchSignStatus();
     } else {
-      // 否则执行自动登录
       this.autoLogin();
     }
-
-    // 初始化抽签状态
     this.initFortune();
   },
 
-  // 自动登录：调用后端login接口获取openid和绑定状态
+  // 调用后端login接口获取openid和绑定状态
   autoLogin() {
     wx.login({
       success: (res) => {
@@ -80,9 +72,9 @@ Page({
                   bound: data.bound
                 });
                 if (data.bound && data.user) {
-                  // 已绑定，保存user_id和手机号
+                  // 已绑定
                   const userId = data.user.user_id;
-                  const boundPhone = data.user.username; // username即手机号
+                  const boundPhone = data.user.username; 
                   this.setData({
                     userId: userId,
                     boundPhone: boundPhone
@@ -135,7 +127,7 @@ Page({
     });
   },
 
-  // 点击签到
+  //签到
   handleSign() {
     const { openid, signedToday, signLoading } = this.data;
     if (signedToday || signLoading) return;
@@ -165,25 +157,25 @@ Page({
     });
   },
 
-  // 初始化抽签状态（从存储读取，若无则随机一条）
+  // 初始化抽签
 initFortune() {
   const stored = wx.getStorageSync('fortune');
   if (stored && stored.text) {
     this.setData({ todayFortune: stored });
   } else {
-    this.drawFortune(); // 随机一条并存储
+    this.drawFortune(); 
   }
 },
 
-// 抽签：随机选取签文，更新界面并存储
+// 抽签
 drawFortune() {
   const randomIndex = Math.floor(Math.random() * this.fortunes.length);
   const fortune = this.fortunes[randomIndex];
-  wx.setStorageSync('fortune', fortune); // 覆盖存储
+  wx.setStorageSync('fortune', fortune); 
   this.setData({ todayFortune: fortune });
 },
 
-  // 检查并跳转 Record（需绑定）
+  // 检查并跳转 Record
   checkAndGotoRecord() {
     if (!this.data.bound) {
       wx.showModal({
@@ -218,7 +210,7 @@ drawFortune() {
     this.setData({ showDetail: false });
   },
 
-  // 获取微信用户信息（头像、昵称）
+  // 获取微信用户头像、昵称
   getUserProfile() {
     wx.getUserProfile({
       desc: '用于展示用户头像和昵称',
@@ -243,11 +235,9 @@ drawFortune() {
 
   // 取消绑定
   cancelBind(e) {
-    // 如果点击的是遮罩层（通过dataset判断），则关闭
     if (e.target.dataset.type === 'mask') {
       this.setData({ showPopup: false, phone: '', password: '' });
     } else {
-      // 直接调用时（如点击取消按钮）也关闭
       this.setData({ showPopup: false, phone: '', password: '' });
     }
   },
@@ -282,7 +272,7 @@ drawFortune() {
             phone: '',
             password: ''
           });
-          // 重新获取登录状态，更新页面（autoLogin中会调用fetchSignStatus）
+
           this.autoLogin();
         } else {
           wx.showToast({ title: res.data.message || '绑定失败', icon: 'none' });
@@ -309,7 +299,7 @@ drawFortune() {
             success: (res) => {
               if (res.data.code === 200) {
                 wx.showToast({ title: '解绑成功', icon: 'success' });
-                // 清除本地存储的绑定信息
+
                 wx.removeStorageSync('userId');
                 wx.removeStorageSync('boundPhone');
                 // 更新页面状态
@@ -318,7 +308,7 @@ drawFortune() {
                   userId: null,
                   boundPhone: ''
                 });
-                // 签到状态不受影响，无需额外操作
+
               } else {
                 wx.showToast({ title: res.data.message || '解绑失败', icon: 'none' });
               }
@@ -332,7 +322,7 @@ drawFortune() {
     });
   },
 
-  // 阻止弹窗内容点击关闭（用于catchtap）
+ 
   stopPropagation() {},
 
   // 跳转Wiki页面
