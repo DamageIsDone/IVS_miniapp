@@ -54,7 +54,7 @@ Page({
   },
 
   getData() {
-    const userId = this.data.UserId;
+    const userId = this.data.userId;
     const baseUrl = app.globalData.baseUrl;
     wx.request({
     url: `${baseUrl}/uits`, 
@@ -63,7 +63,7 @@ Page({
       
       this.setData({ uitCache: res.data });
       
-      console.log("✅ U_I_T缓存初始化完成：", this.uitCache);
+      console.log("✅ U_I_T缓存初始化完成：", this.data.uitCache);
     }
   });
     wx.request({
@@ -131,8 +131,8 @@ Page({
         }
       },
       fail: (err) => {
-        console.log('error');
-        console.log(err);
+        // console.log('error');
+        // console.log(err);
       },
     });
     
@@ -964,7 +964,7 @@ onLoad(options) {
         selected: 'record'
       });
     }
-    this,this.getUid();
+    this.getUid();
     this.getData();
   },
 
