@@ -1,9 +1,9 @@
 Component({
   data: {
-    selected: 'wiki', // 初始选中wiki
+    selected: 'wiki',
     color: "#666666",
     selectedColor: "#0088ff",
-    showDetail: false // 控制关于我们弹窗显示/隐藏
+    showDetail: false
   },
 
   attached() {

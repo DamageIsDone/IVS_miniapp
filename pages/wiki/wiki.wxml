@@ -31,7 +31,7 @@
     </view>
   </view>
 
-  <!-- 监管者容器 -->
+  <!-- 监管者 -->
   <view class="character-list" wx:if="{{currentTab === 0}}">
     <view class="character-card {{index === hunterList.length - 1 ? 'no-margin' : ''}}" 
           wx:for="{{hunterList}}" wx:key="identity_id"
@@ -45,7 +45,7 @@
     <view class="empty-tip" wx:if="{{hunterList.length === 0}}">暂无监管者数据</view>
   </view>
 
-  <!-- 求生者容器 -->
+  <!-- 求生者 -->
   <view class="character-list" wx:if="{{currentTab === 1}}">
     <view class="character-card {{index === survivorList.length - 1 ? 'no-margin' : ''}}" 
           wx:for="{{survivorList}}" wx:key="identity_id"
@@ -59,7 +59,7 @@
     <view class="empty-tip" wx:if="{{survivorList.length === 0}}">暂无求生者数据</view>
   </view>
 
-  <!-- 人格脉络容器 -->
+  <!-- 人格脉络 -->
   <view class="character-list" wx:if="{{currentTab === 2}}">
     <view class="character-card {{index === talentList.length - 1 ? 'no-margin' : ''}}" 
           wx:for="{{talentList}}" wx:key="talent_id"
@@ -89,20 +89,16 @@
     </view>
   </view>
 
-  <!-- 角色详情弹窗（最终版） -->
+  <!-- 角色详情弹窗 -->
   <view class="identity-detail-mask" wx:if="{{showIdentityDetail}}" bindtap="closeIdentityDetail"></view>
   <view class="identity-detail-popup" wx:if="{{showIdentityDetail}}">
-    <!-- 关闭按钮 -->
     <view class="popup-close" bindtap="closeIdentityDetail">✕</view>
     
-    <!-- 加载状态 -->
     <view class="loading-wrap" wx:if="{{loadingDetail}}">
       <view class="loading">加载中...</view>
     </view>
 
-    <!-- 详情内容 -->
     <view class="identity-popup-content" wx:if="{{!loadingDetail && currentIdentity}}">
-      <!-- 基础信息 -->
       <view class="basic-info">
         <image class="popup-avatar" src="{{currentIdentity.picture}}" mode="aspectFit"></image>
         <view class="popup-name">{{currentIdentity.name}}</view>
@@ -114,7 +110,7 @@
         </view>
         <view class="info-row">
           <view class="info-label">性别：</view>
-          <view class="info-value">{{currentIdentity.genderText}}</view> <!-- 修复性别显示 -->
+          <view class="info-value">{{currentIdentity.genderText}}</view>
         </view>
         <view class="info-row" wx:if="{{currentIdentity.birthday}}">
           <view class="info-label">生日：</view>
