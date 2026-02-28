@@ -68,13 +68,19 @@ Page({
    * 获取所有战绩相关数据
    */
   getData() {
-    const userId = wx.getStorageSync('userId'); // 直接从缓存获取，避免依赖data的异步更新
-    if (!userId) {
-      wx.showToast({ title: '请先绑定账号', icon: 'none' });
-      return; // 未登录则不发送请求
-    }
-
+    const userId = this.data.userId;
     const baseUrl = app.globalData.baseUrl;
+    wx.request({
+    url: `${baseUrl}/uits`, 
+    method: 'GET',
+    success: (res) => {
+      
+      this.setData({ uitCache: res.data });
+      
+      console.log("✅ U_I_T缓存初始化完成：", this.data.uitCache);
+    }
+  });
+
 
     // 加载U_I_T缓存
     wx.request({
@@ -139,7 +145,10 @@ Page({
           this.setData({ survivor: res.data });
         }
       },
-      fail: (err) => console.log('最常用求生者请求失败', err),
+      fail: (err) => {
+        // console.log('error');
+        // console.log(err);
+      },
     });
 
     // 历史对局列表
@@ -926,8 +935,8 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 'record' });
     }
-    this.getUid();    // 每次显示重新读取缓存（例如解绑后 userId 变化）
-    this.getData();   // 刷新数据
+    this.getUid();
+    this.getData();
   },
 
   /**
